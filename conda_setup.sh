@@ -12,7 +12,7 @@ printf '\n# add path to conda\nexport PATH="$HOME/miniconda3/bin:$PATH"\n' >> ~/
 
 source ~/.bashrc
 
-conda init --help
+conda init
 
 source ~/.bashrc
 
