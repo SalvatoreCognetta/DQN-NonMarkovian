@@ -14,5 +14,8 @@
 ## Activate env
 `conda activate raenv`
 
+### Install sapientino-case
+`cd gym-sapientino-case && pip install .`
+
 To see examples please look at last year projects (similar, though not identical, to this year ones): [Drive](https://docs.google.com/spreadsheets/d/1r5HyGsLVW7F7E2ypZZZkaYBTEF6PJT6hNyIuDOBHbSo/edit#gid=0)
 
