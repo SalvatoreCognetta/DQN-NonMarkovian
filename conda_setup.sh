@@ -18,5 +18,3 @@ source ~/.bashrc
 
 conda activate
 
-source ~/.bashrc
-
