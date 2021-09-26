@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
     #Default dqn memory.
     if not memory:
-        memory = 'minimum'
+        memory = 20000 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
 
     HIDDEN_STATE_SIZE = args.hidden_size
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     MAX_EPISODE_TIMESTEPS = args.max_timesteps
 
     #Choose whether or not to visualize the environment
-    VISUALIZE = False
+    VISUALIZE = True
 
     # Limit the length of the episode of gym sapientino.
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
@@ -170,7 +170,7 @@ if __name__ == '__main__':
 
 
 
-    agent = build_agent(agent = 'ppo', batch_size = batch_size,
+    agent = build_agent(agent = 'dqn', batch_size = batch_size,
                         memory =memory,
                         update_frequency=update_frequency,
                         multi_step = multi_step,

@@ -7,7 +7,7 @@ from tensorforce.agents import Agent
 
 def build_agent(agent, batch_size,environment,num_states_automaton,
                       hidden_layer_size,automaton_state_encoding_size,
-                      memory= 'minimum',
+                      memory= 20000,#'minimum',
                      update_frequency = 20,multi_step = 10,exploration = 0.0, learning_rate = 0.001,
                 non_markovian = True, entropy_regularization = 0.0, saver = None):
 
@@ -57,7 +57,7 @@ def build_agent(agent, batch_size,environment,num_states_automaton,
             batch_size = batch_size,
             environment = environment,
             update_frequency = update_frequency,
-            multi_step = multi_step,
+            # multi_step = multi_step,
             states = dict(
                 gymtpl0 = dict(type = 'float',shape= (4,),min_value = -np.inf,max_value = np.inf), # shape= (7,)
                 gymtpl1 = dict(type ='float',shape=(AUTOMATON_STATE_ENCODING_SIZE,),min_value = 0.0, max_value = 1.0)
