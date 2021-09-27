@@ -47,7 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('--exploration', type = float, default = 0.0, help = "Exploration for the epsilon greedy algorithm.")
     parser.add_argument('--entropy_bonus', type = float, default = 0.0, help ="Entropy bonus for the 'extended' loss of PPO. It discourages the policy distribution from being “too certain” (default: no entropy regularization." )
     parser.add_argument('--hidden_size', type = int, default = 64, help="Number of neurons of the hidden layers of the network.")
-    parser.add_argument('--max_timesteps', type = int, default = 300, help= "Maximum number of timesteps each episode.")
+    parser.add_argument('--max_timesteps', type = int, default = 500, help= "Maximum number of timesteps each episode.")
     parser.add_argument('--episodes', type = int, default = 1000, help = "Number of training episodes.")
     parser.add_argument('--path', type = str, default = None, help = "Path to the map file inside the file system.")
     parser.add_argument("--sequence", nargs="+", default=None, help="Goal sequence for the training specified as a list of strings.")
@@ -146,15 +146,11 @@ if __name__ == '__main__':
     NUM_EXPERTS = num_colors
 
 
-
-
-
-
     #Set this value here to the maximum timestep value.
     MAX_EPISODE_TIMESTEPS = args.max_timesteps
 
     #Choose whether or not to visualize the environment
-    VISUALIZE = True
+    VISUALIZE = False
 
     # Limit the length of the episode of gym sapientino.
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
@@ -200,8 +196,6 @@ if __name__ == '__main__':
     trainer = NonMarkovianTrainer(agent,environment,NUM_STATES_AUTOMATON,AUTOMATON_STATE_ENCODING_SIZE,
                                   SINK_ID,num_colors=num_colors
                                   )
-
-
 
 
     EPISODES = args.episodes
