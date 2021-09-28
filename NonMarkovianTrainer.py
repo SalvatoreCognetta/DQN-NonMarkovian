@@ -23,7 +23,8 @@ class NonMarkovianTrainer(object):
                 automaton_encoding_size: int,
                 sink_id: int, 
                 num_colors: int = 2,
-                 ):
+                act_pattern:str='act-observe'
+                ):
 
         """
         Desc: class that implements the non markovian training (multiple colors for gym sapientino).
@@ -44,6 +45,9 @@ class NonMarkovianTrainer(object):
         self.agent = agent
         self.environment = environment
         self.num_colors = num_colors
+        self.act_pattern = act_pattern
+
+        assert act_pattern in ['act-observe', 'act-experience-update']
 
         if DEBUG:
             print("\n################### Agent architecture ###################\n")
@@ -176,8 +180,18 @@ class NonMarkovianTrainer(object):
 
             # Train for N episodes
             for episode in tqdm(range(episodes),desc='training',leave = True):
+
+                # Record episode experience
+                episode_states = list()
+                episode_internals = list()
+                episode_actions = list()
+                episode_terminal = list()
+                episode_reward = list()
+
+
                 terminal = False
                 # Episode using independent-act and agent.intial_internals()
+                internals = agent.initial_internals()
                 states = environment.reset()
                 # automaton_state = states['gymtpl1'][0]
                 states = self.pack_states(states)
@@ -185,22 +199,42 @@ class NonMarkovianTrainer(object):
                 #Save the reward that you reach in the episode inside a linked list. This will be used for nice plots in the report.
                 ep_reward = 0.0
                 while not terminal:
-                    print("ENVIRONMENT: {}\n".format(environment))
                     environment.render()
+
                     prev_states = states.copy()
-                    actions = agent.act(states=states)
+
+                    # act-experience-update
+                    episode_states.append(states)
+                    episode_internals.append(internals)
+
+                    if self.act_pattern == 'act-observe':
+                        actions = agent.act(states=states)
+                    elif self.act_pattern == 'act-experience-update':
+                        actions, internals = agent.act(states=states, internals=internals, independent=True)
+
+                    # act-experience-update
+                    episode_actions.append(actions)
+                    
                     states, reward, terminal, info = environment.step(actions)
+
                     #Extract gym sapientino state and the state of the automaton.
                     automaton_state = int(states[1][0])
                     states = self.pack_states(states).copy()
                     # Reward shaping.
                     reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+
+                    # act-experience-update
+                    episode_terminal.append(terminal)
+                    episode_reward.append(reward)
+                    
                     if reward != -0.1:
                         print(automaton_state, terminal, reward, info)
                     prevAutState = int(automaton_state)
                     ep_reward += reward
                     cum_reward += reward
-                    agent.observe(terminal=terminal, reward=reward)
+                    
+                    if self.act_pattern == 'act-observe':
+                        agent.observe(terminal=terminal, reward=reward)
   
                     if terminal:
                         states = environment.reset()
@@ -208,6 +242,16 @@ class NonMarkovianTrainer(object):
                     #     self.make_experience(automaton_state, agent, prev_states, environment, episode)
                 
                 print('Episode {}: {}'.format(episode, ep_reward))
+
+                if self.act_pattern == 'act-experience-update':
+                    # Feed recorded experience to agent
+                    agent.experience(
+                        states=episode_states, internals=episode_internals, actions=episode_actions,
+                        terminal=episode_terminal, reward=episode_reward
+                    )
+
+                    # Perform update
+                    agent.update()
                 
             # # EVALUATE for 100 episodes and VISUALIZE
             # sum_rewards = 0.0
