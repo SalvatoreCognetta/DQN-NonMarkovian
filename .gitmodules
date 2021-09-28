@@ -1,0 +1,6 @@
+[submodule "reasoning_agent_project"]
+	path = reasoning_agent_project
+	url = https://github.com/lucalobefaro/reasoning_agent_project
+[submodule "RA_project"]
+	path = RA_project
+	url = https://github.com/francycar/RA_project
