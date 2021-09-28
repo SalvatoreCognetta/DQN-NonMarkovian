@@ -6,19 +6,10 @@ import numpy as np
 def one_hot_encode(x,size, num_labels):
 
     ret = np.zeros(size,dtype = np.float)
-    if size%num_labels !=0:
-        return ret
-    else:
+    if size%num_labels == 0:
         block_size = int(size/num_labels)
-
-        i = 0
-        k = 0
-        while(i<size):
-            if k == x:
-                ret[i:i+block_size] = 1.0
-            k+=1
-            i = i+block_size
-        return ret
+        ret[int(x)*block_size:(int(x)+1)*block_size]=1.0
+    return ret
 
 
 if __name__ == '__main__':

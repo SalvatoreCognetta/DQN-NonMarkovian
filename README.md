@@ -17,13 +17,36 @@
 `conda activate raenv`
 
 ### Install tensorforce
-`pip install tensorforce`
+`pip install tensorforce==0.6.4`
 
 ### Install sapientino-case
-`cd gym-sapientino-case && pip install .`
+`git clone https://github.com/cipollone/gym-sapientino-case.git && cd gym-sapientino-case && pip install .`
+
+### Install Lydia
+Make sure to have [Lydia](https://github.com/whitemech/lydia) 
+installed on your machine.
+We suggest the following setup:
+
+- [Install Docker](https://www.docker.com/get-started)
+- Download the Lydia Docker image:
+```
+docker pull whitemech/lydia:latest
+```
+- Make the Docker image executable under the name `lydia`.
+  On Linux and MacOS machines, the following commands should work:
+```
+echo '#!/usr/bin/env sh' > lydia
+echo 'docker run -v$(pwd):/home/default whitemech/lydia lydia "$@"' >> lydia
+sudo chmod u+x lydia
+sudo mv lydia /usr/local/bin/
+```
+
+This will install an alias to the inline Docker image execution
+in your system PATH. Instead of `/usr/local/bin/`
+you may use another path which is still in the `PATH` variable.
 
 ## Train the net
-`python main.py --exploration=0.5`
+`python main.py --exploration=0.3 --num_colors=3`
 
 To see examples please look at last year projects (similar, though not identical, to this year ones): [Drive](https://docs.google.com/spreadsheets/d/1r5HyGsLVW7F7E2ypZZZkaYBTEF6PJT6hNyIuDOBHbSo/edit#gid=0)
 

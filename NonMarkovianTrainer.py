@@ -1,19 +1,29 @@
 from tensorforce.agents import Agent
 from tensorforce.environments import Environment
-
-
 from one_hot import one_hot_encode
 from tqdm.auto import tqdm
 from copy import deepcopy
-
-
+import numpy as np
 
 DEBUG = False
 
+#One hot encoding for the state of the automaton
+def one_hot_encode(x,size, num_labels):
+
+    ret = np.zeros(size,dtype = np.float)
+    if size%num_labels == 0:
+        block_size = int(size/num_labels)
+        ret[int(x)*block_size:(int(x)+1)*block_size]=1.0
+    return ret
 
 class NonMarkovianTrainer(object):
-    def __init__(self,agent,environment,num_state_automaton,
-                 automaton_encoding_size,sink_id, num_colors = 2,
+    def __init__(self,
+                agent: Agent,
+                environment: Environment,
+                num_state_automaton: int,
+                automaton_encoding_size: int,
+                sink_id: int, 
+                num_colors: int = 2,
                  ):
 
         """
@@ -29,50 +39,36 @@ class NonMarkovianTrainer(object):
             @sink_id: (int) the integer representing the failure state of the goal DFA.
 
         """
-
-
-
         self.num_state_automaton = num_state_automaton
         self.automaton_encoding_size = automaton_encoding_size
-
         self.sink_id = sink_id
-
-
-        #Create both the agent and the environment that will be used a training time.
         self.agent = agent
         self.environment = environment
-
-
         self.num_colors = num_colors
-
-
 
         if DEBUG:
             print("\n################### Agent architecture ###################\n")
-            architecture = self.agent.get_architecture()
-            print(architecture)
+            print(self.agent.get_architecture())
 
-
-    def make_experience(self, agent, states, environment, episode):
+    def make_experience(self, curr_automaton_state, agent, states, environment, episode):
         # experience = []
-
         for prev_automaton_state in range(self.num_state_automaton):
-
-            states_ = states.copy()
-            states_['gymtpl1'][0] = prev_automaton_state
-            states_ = self.pack_states(states_)
-            actions = agent.act(states=states_)
-            
-            # deepcopy avoid to increase env steps while iterating over automaton state
-            # to be substituted if exists a way to simulate env without increasing timestep and env state
-            states_, terminal, reward = deepcopy(environment).execute(actions=actions)
- 
-            #Extract gym sapientino state and the state of the automaton.
-            automaton_state = states_['gymtpl1'][0]
-            # Reward shaping.
-            reward, terminal = self.get_reward_automaton(automaton_state, prev_automaton_state,  reward, terminal, episode)
-            agent.observe(terminal=terminal, reward=reward)            
-            # experience.append([prev_states,prev_automaton_state,actions,reward,states,automaton_state])
+            if prev_automaton_state!= self.sink_id and prev_automaton_state!=self.num_state_automaton-1 and prev_automaton_state !=curr_automaton_state:
+                states_ = states.copy()
+                states_['gymtpl1'][0] = int(prev_automaton_state)
+                states_ = self.pack_states(states_)
+                actions = agent.act(states=states_)
+                
+                # deepcopy avoid to increase env steps while iterating over automaton state
+                # to be substituted if exists a way to simulate env without increasing timestep and env state
+                states_, terminal, reward = deepcopy(environment).execute(actions=actions)
+    
+                #Extract gym sapientino state and the state of the automaton.
+                automaton_state = int(states_['gymtpl1'][0])
+                # Reward shaping.
+                reward, terminal = self.get_reward_automaton(automaton_state, prev_automaton_state,  reward, terminal, episode)
+                agent.observe(terminal=terminal, reward=reward)            
+                # experience.append([prev_states,prev_automaton_state,actions,reward,states,automaton_state])
 
     def get_reward_automaton(self, automaton_state, prev_automaton_state, reward, terminal, episode):
         if self.num_colors == 2:
@@ -93,7 +89,6 @@ class NonMarkovianTrainer(object):
 
             if automaton_state == self.sink_id:
                 reward = -500.0
-
                 terminal = True
 
             elif automaton_state == 1 and prev_automaton_state==0:
@@ -112,9 +107,7 @@ class NonMarkovianTrainer(object):
             #Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
             if automaton_state == self.sink_id:
                 reward = -500.0
-
                 terminal = True
-
 
             elif automaton_state == 1 and prev_automaton_state==0:
                 reward = 500.0
@@ -125,13 +118,12 @@ class NonMarkovianTrainer(object):
             elif automaton_state ==4 and prev_automaton_state == 3:
                 reward = 500.0
 
-            elif automaton_state == 5:
+            elif automaton_state == 5 and prev_automaton_state ==4:
                 reward = 500.0
                 print("Visited goal on episode: ", episode)
                 terminal = True
 
         return reward, terminal
-
 
     def pack_states(self,states):
         """
@@ -160,7 +152,7 @@ class NonMarkovianTrainer(object):
         one_hot_encoding = one_hot_encode(automaton_state,
                                             self.automaton_encoding_size,self.num_state_automaton)
 
-        return dict(gymtpl0 =obs,
+        return dict(gymtpl0 = obs,
                     gymtpl1 = one_hot_encoding)
 
     def train(self,episodes = 1000):
@@ -199,49 +191,49 @@ class NonMarkovianTrainer(object):
                 #Save the reward that you reach in the episode inside a linked list. This will be used for nice plots in the report.
                 ep_reward = 0.0
                 while not terminal:
-                    prev_states = states
+                    prev_states = states.copy()
                     actions = agent.act(states=states)
                     states, terminal, reward = environment.execute(actions=actions)
                     #Extract gym sapientino state and the state of the automaton.
-                    automaton_state = states['gymtpl1'][0]
-                    states = self.pack_states(states)
+                    automaton_state = int(states['gymtpl1'][0])
+                    print(states, terminal, reward)
+                    states = self.pack_states(states).copy()
                     # Reward shaping.
                     reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
-                    prevAutState = automaton_state
+                    prevAutState = int(automaton_state)
                     ep_reward += reward
                     cum_reward += reward
                     agent.observe(terminal=terminal, reward=reward)
   
                     if terminal:
                         states = environment.reset()
-                    else:
-                        self.make_experience(agent, prev_states, environment, episode)
+                    # else:
+                    #     self.make_experience(automaton_state, agent, prev_states, environment, episode)
                 
                 print('Episode {}: {}'.format(episode, ep_reward))
                 
-                # EVALUATE for 100 episodes and VISUALIZE
-                # sum_rewards = 0.0
-                # for _ in range(10):
-                #     states = environment.reset()
-                #     prevAutState = 0
-                #     states = self.pack_states(states)
-                #     environment.visualize = True
-                #     internals = agent.initial_internals()
-                #     terminal = False
-                #     while not terminal:
-                #         prev_states = states
-                #         actions, internals = agent.act(
-                #             states=states, internals=internals, independent=True, deterministic=True
-                #         )
-                #         states, terminal, reward = environment.execute(actions=actions)
-                #         automaton_state = states['gymtpl1'][0]
-                #         states = self.pack_states(states)
-                #         # Reward shaping.
-                #         reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
-                #         prevAutState = automaton_state
-                #         sum_rewards += reward
-                # environment.visualize = False
-                # print('Mean evaluation return:', sum_rewards / 100.0)
+            # EVALUATE for 100 episodes and VISUALIZE
+            sum_rewards = 0.0
+            for _ in range(100):
+                states = environment.reset()
+                prevAutState = 0
+                states = self.pack_states(states)
+                environment.visualize = True
+                internals = agent.initial_internals()
+                terminal = False
+                while not terminal:
+                    actions, internals = agent.act(
+                        states=states, internals=internals, independent=True, deterministic=True
+                    )
+                    states, terminal, reward = environment.execute(actions=actions)
+                    automaton_state = states['gymtpl1'][0]
+                    states = self.pack_states(states)
+                    # Reward shaping.
+                    # reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
+                    prevAutState = automaton_state
+                    sum_rewards += reward
+            environment.visualize = False
+            print('Mean evaluation return:', sum_rewards / 100.0)
 
                 
 
@@ -257,7 +249,3 @@ class NonMarkovianTrainer(object):
 
            #Let the user interrupt
            pass
-
-
-
-

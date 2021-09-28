@@ -12,6 +12,11 @@ import os
 
 #Custom observation wrapper for the gymsapientino environment
 from gym_sapientino_case.env import SapientinoCase
+from gym_sapientino.core.actions import ContinuousCommand
+from gym_sapientino.core.configurations import (
+    SapientinoAgentConfiguration,
+    SapientinoConfiguration,
+)
 
 from agent_config import  build_agent
 
@@ -103,27 +108,71 @@ if __name__ == '__main__':
     log_dir = os.path.join('.','log_dir')
 
     #Istantiate the gym sapientino environment.
-    environment = SapientinoCase(
-
-        colors = colors,
-
-        params = dict(
-            reward_per_step=-1.0,
-            reward_outside_grid=0.0,
-            reward_duplicate_beep=0.0,
-            acceleration=0.4,
-            angular_acceleration=15.0,
-            max_velocity=0.6,
-            min_velocity=0.4,
-            max_angular_vel=40,
-            initial_position=[4, 2],
-            tg_reward=1000.0,
-        ),
-
-        map_file = map_file,
-        logdir =log_dir
-
+    agent_conf = SapientinoAgentConfiguration(
+        initial_position=(2, 2),
+        commands=ContinuousCommand,
+        angular_speed=30.0,
+        acceleration=0.10,
+        max_velocity=0.40,
+        min_velocity=0.0,
     )
+
+    _default_map = """\
+    |           |
+    |     b     |
+    |     #     |
+    |  r  # g   |
+    |     #     |
+    |###########|"""
+
+    conf = SapientinoConfiguration(
+        agent_configs=(agent_conf,),
+        grid_map=_default_map,
+        reward_outside_grid=0.0,
+        reward_duplicate_beep=0.0,
+        reward_per_step=0.0,
+    )
+
+    def colors2reward_ldlf(colors:list): # convert color list to ldlf
+        reward_ldlf = "<"
+        for i,c in enumerate(colors):
+            reward_ldlf+="!"+c+"*; "+c
+            if i<len(colors)-1:
+                reward_ldlf+="; "
+            elif i==len(colors)-1:
+                reward_ldlf+=">end"
+        return reward_ldlf
+    
+    reward_ldlf = colors2reward_ldlf(colors) 
+
+    print(reward_ldlf)
+
+    environment = SapientinoCase(
+        conf=conf,
+        reward_ldlf=reward_ldlf,
+        logdir=log_dir,
+    )
+    # environment = SapientinoCase(
+
+    #     colors = colors,
+
+    #     params = dict(
+    #         reward_per_step=-1.0,
+    #         reward_outside_grid=0.0,
+    #         reward_duplicate_beep=0.0,
+    #         acceleration=0.4,
+    #         angular_acceleration=15.0,
+    #         max_velocity=0.6,
+    #         min_velocity=0.4,
+    #         max_angular_vel=40,
+    #         initial_position=[4, 2],
+    #         tg_reward=1000.0,
+    #     ),
+
+    #     map_file = map_file,
+    #     logdir =log_dir
+
+    # )
 
 
 
@@ -150,7 +199,7 @@ if __name__ == '__main__':
     MAX_EPISODE_TIMESTEPS = args.max_timesteps
 
     #Choose whether or not to visualize the environment
-    VISUALIZE = False
+    VISUALIZE = True
 
     # Limit the length of the episode of gym sapientino.
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
@@ -164,12 +213,12 @@ if __name__ == '__main__':
     #AUTOMATON_STATE_ENCODING_SIZE = HIDDEN_STATE_SIZE*NUM_EXPERTS
 
 
-
+    discount_factor = 0.9
 
     agent = build_agent(agent = 'dqn', batch_size = batch_size,
                         memory =memory,
                         update_frequency=update_frequency,
-                        multi_step = multi_step,
+                        discount_factor = discount_factor,
                         learning_rate=learning_rate,
 
                         environment = environment,
