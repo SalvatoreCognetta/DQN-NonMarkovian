@@ -7,6 +7,12 @@
 ### Pull with all the submodules
 `git submodule update --init --recursive`
 
+The submodule is always set to have its HEAD detached at a given commit by default : as the main repository is not tracking the changes of the submodule, it is only seen as a specific commit from the submodule repository.
+
+In order to update an existing Git submodule, you need to execute the “git submodule update” with the “–remote” and the “–merge” option.
+
+`git submodule update --remote --merge`
+
 ### Install conda
 `sudo bash conda_setup.sh`
 
