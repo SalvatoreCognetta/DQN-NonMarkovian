@@ -1,5 +1,5 @@
 from tensorforce.agents import Agent
-from tensorforce.environments import Environment
+from gym_sapientino_case.env import SapientinoCase
 from tqdm.auto import tqdm
 from copy import deepcopy
 import numpy as np
@@ -18,7 +18,7 @@ def one_hot_encode(x,size, num_labels):
 class NonMarkovianTrainer(object):
     def __init__(self,
                 agent: Agent,
-                environment: Environment,
+                environment: SapientinoCase,
                 num_state_automaton: int,
                 automaton_encoding_size: int,
                 sink_id: int, 
@@ -32,7 +32,7 @@ class NonMarkovianTrainer(object):
 
         Args:
             @param agent: (tensorforce.agents.Agent) tensorforce agent (algrithm) that will be used to train the policy network (example: ppo, ddqn,dqn).
-            @param environment: (tensorforce.environments.Environment) istance of the tensorforce/openAI gym environment used for training.
+            @param environment: (gym_sapientino_case.env.SapientinoCase) istance of the SapientinoCase/openAI gym environment used for training.
             @param num_state_automaton: (int) number of states of the goal state DFA.
             @automaton_state_encoding_size: (int) size of the binary encoding of the automaton state. See the report in report/pdf in section "Non markovian agent" for further details.
             @sink_id: (int) the integer representing the failure state of the goal DFA.
@@ -185,6 +185,7 @@ class NonMarkovianTrainer(object):
                 #Save the reward that you reach in the episode inside a linked list. This will be used for nice plots in the report.
                 ep_reward = 0.0
                 while not terminal:
+                    print("ENVIRONMENT: {}\n".format(environment))
                     environment.render()
                     prev_states = states.copy()
                     actions = agent.act(states=states)
