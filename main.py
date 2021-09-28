@@ -117,20 +117,17 @@ if __name__ == '__main__':
         min_velocity=0.0,
     )
 
-    _default_map = """\
-    |           |
-    |     b     |
-    |     #     |
-    |  r  # g   |
-    |     #     |
-    |###########|"""
+    with open(map_file) as f:
+        map = """""".join(f.readlines())
+
+    print(map)
 
     conf = SapientinoConfiguration(
         agent_configs=(agent_conf,),
-        grid_map=_default_map,
+        grid_map=map,
         reward_outside_grid=0.0,
         reward_duplicate_beep=0.0,
-        reward_per_step=0.0,
+        reward_per_step=-0.1,
     )
 
     def colors2reward_ldlf(colors:list): # convert color list to ldlf
@@ -203,8 +200,8 @@ if __name__ == '__main__':
 
     # Limit the length of the episode of gym sapientino.
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
-    environment = Environment.create(environment =environment,max_episode_timesteps=MAX_EPISODE_TIMESTEPS,visualize =VISUALIZE)
-
+    # environment = Environment.create(environment =environment,max_episode_timesteps=MAX_EPISODE_TIMESTEPS,visualize =VISUALIZE)
+    # print(environment.actions())
     #NUM_STATES_AUTOMATON = 4
 
     #HIDDEN_STATE_SIZE = 64

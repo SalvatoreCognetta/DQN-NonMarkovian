@@ -17,7 +17,7 @@
 `conda activate raenv`
 
 ### Install tensorforce
-`pip install tensorforce==0.6.4`
+`pip install tensorforce==0.6.5`
 
 ### Install sapientino-case
 `git clone https://github.com/cipollone/gym-sapientino-case.git && cd gym-sapientino-case && pip install .`
@@ -44,6 +44,15 @@ sudo mv lydia /usr/local/bin/
 This will install an alias to the inline Docker image execution
 in your system PATH. Instead of `/usr/local/bin/`
 you may use another path which is still in the `PATH` variable.
+
+## Error Numpy
+If you get an error like this:
+**TypeError: concatenate() got an unexpected keyword argument 'dtype'
+**
+The problem is the unsupported numpy version, upgrading would produce tensorflow and tensorforce incompatibility. Comment line 205 of the file:
+`nano $HOME/.conda/envs/raenv/lib/python3.8/site-packages/gym_sapientino/wrappers/observations.py`
+
+
 
 ## Train the net
 `python main.py --exploration=0.3 --num_colors=3`

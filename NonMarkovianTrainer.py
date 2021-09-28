@@ -1,6 +1,5 @@
 from tensorforce.agents import Agent
 from tensorforce.environments import Environment
-from one_hot import one_hot_encode
 from tqdm.auto import tqdm
 from copy import deepcopy
 import numpy as np
@@ -10,7 +9,7 @@ DEBUG = False
 #One hot encoding for the state of the automaton
 def one_hot_encode(x,size, num_labels):
 
-    ret = np.zeros(size,dtype = np.float)
+    ret = np.zeros(size,dtype = np.float32)
     if size%num_labels == 0:
         block_size = int(size/num_labels)
         ret[int(x)*block_size:(int(x)+1)*block_size]=1.0
@@ -55,7 +54,7 @@ class NonMarkovianTrainer(object):
         for prev_automaton_state in range(self.num_state_automaton):
             if prev_automaton_state!= self.sink_id and prev_automaton_state!=self.num_state_automaton-1 and prev_automaton_state !=curr_automaton_state:
                 states_ = states.copy()
-                states_['gymtpl1'][0] = int(prev_automaton_state)
+                states_[1][0] = int(prev_automaton_state)
                 states_ = self.pack_states(states_)
                 actions = agent.act(states=states_)
                 
@@ -64,7 +63,7 @@ class NonMarkovianTrainer(object):
                 states_, terminal, reward = deepcopy(environment).execute(actions=actions)
     
                 #Extract gym sapientino state and the state of the automaton.
-                automaton_state = int(states_['gymtpl1'][0])
+                automaton_state = int(states_[1][0])
                 # Reward shaping.
                 reward, terminal = self.get_reward_automaton(automaton_state, prev_automaton_state,  reward, terminal, episode)
                 agent.observe(terminal=terminal, reward=reward)            
@@ -141,9 +140,8 @@ class NonMarkovianTrainer(object):
                         'gymtpl1': (np.ndarray) the binary encoded representation for the automaton state (see the pdf report in ./report section "Non markovian agent" for additional details.
         """
 
-
-        obs = states['gymtpl0']
-        automaton_state = states['gymtpl1'][0]
+        obs = states[0]
+        automaton_state = states[1][0]
 
 
         """
@@ -161,10 +159,6 @@ class NonMarkovianTrainer(object):
             @param episodes: (int) number of training episodes.
         """
         cum_reward = 0.0
-
-
-
-        
 
         agent = self.agent
         environment = self.environment
@@ -191,15 +185,17 @@ class NonMarkovianTrainer(object):
                 #Save the reward that you reach in the episode inside a linked list. This will be used for nice plots in the report.
                 ep_reward = 0.0
                 while not terminal:
+                    environment.render()
                     prev_states = states.copy()
                     actions = agent.act(states=states)
-                    states, terminal, reward = environment.execute(actions=actions)
+                    states, reward, terminal, info = environment.step(actions)
                     #Extract gym sapientino state and the state of the automaton.
-                    automaton_state = int(states['gymtpl1'][0])
-                    print(states, terminal, reward)
+                    automaton_state = int(states[1][0])
                     states = self.pack_states(states).copy()
                     # Reward shaping.
-                    reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
+                    reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+                    if reward != -0.1:
+                        print(automaton_state, terminal, reward, info)
                     prevAutState = int(automaton_state)
                     ep_reward += reward
                     cum_reward += reward
@@ -212,28 +208,28 @@ class NonMarkovianTrainer(object):
                 
                 print('Episode {}: {}'.format(episode, ep_reward))
                 
-            # EVALUATE for 100 episodes and VISUALIZE
-            sum_rewards = 0.0
-            for _ in range(100):
-                states = environment.reset()
-                prevAutState = 0
-                states = self.pack_states(states)
-                environment.visualize = True
-                internals = agent.initial_internals()
-                terminal = False
-                while not terminal:
-                    actions, internals = agent.act(
-                        states=states, internals=internals, independent=True, deterministic=True
-                    )
-                    states, terminal, reward = environment.execute(actions=actions)
-                    automaton_state = states['gymtpl1'][0]
-                    states = self.pack_states(states)
-                    # Reward shaping.
-                    # reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
-                    prevAutState = automaton_state
-                    sum_rewards += reward
-            environment.visualize = False
-            print('Mean evaluation return:', sum_rewards / 100.0)
+            # # EVALUATE for 100 episodes and VISUALIZE
+            # sum_rewards = 0.0
+            # for _ in range(100):
+            #     states = environment.reset()
+            #     prevAutState = 0
+            #     states = self.pack_states(states)
+            #     environment.visualize = True
+            #     internals = agent.initial_internals()
+            #     terminal = False
+            #     while not terminal:
+            #         actions, internals = agent.act(
+            #             states=states, internals=internals, independent=True, deterministic=True
+            #         )
+            #         states, terminal, reward = environment.execute(actions=actions)
+            #         automaton_state = states['gymtpl1'][0]
+            #         states = self.pack_states(states)
+            #         # Reward shaping.
+            #         # reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
+            #         prevAutState = automaton_state
+            #         sum_rewards += reward
+            # environment.visualize = False
+            # print('Mean evaluation return:', sum_rewards / 100.0)
 
                 
 
@@ -249,3 +245,47 @@ class NonMarkovianTrainer(object):
 
            #Let the user interrupt
            pass
+
+    def get_reward(self, automaton_state, prev_automaton_state, reward, terminal, episode):
+        if self.num_colors == 2:
+
+            if automaton_state == 1 and prev_automaton_state==0:
+                reward = 500.0
+
+            elif automaton_state == 2 and prev_automaton_state==1:
+                reward = 500.0
+                print("Visited goal on episode: ", episode)
+                terminal = True
+
+        elif self.num_colors == 3:
+
+            if automaton_state == 1 and prev_automaton_state==0:
+                reward = 500.0
+
+            elif automaton_state == 2 and prev_automaton_state==1:
+                reward = 500.0
+
+            elif automaton_state ==3 and prev_automaton_state == 2:
+                reward = 500.0
+                print("Visited goal on episode: ", episode)
+                terminal = True
+
+        elif self.num_colors == 4:
+
+            #Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
+            
+            if automaton_state == 1 and prev_automaton_state==0:
+                reward = 500.0
+
+            elif automaton_state == 2 and prev_automaton_state==1:
+                reward = 500.0
+
+            elif automaton_state ==3 and prev_automaton_state == 2:
+                reward = 500.0
+
+            elif automaton_state == 4 and prev_automaton_state ==3:
+                reward = 500.0
+                print("Visited goal on episode: ", episode)
+                terminal = True
+
+        return reward, terminal

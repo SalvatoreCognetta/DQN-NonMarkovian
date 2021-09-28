@@ -55,12 +55,13 @@ def build_agent(agent, batch_size,environment,num_states_automaton,
             agent = agent,
             memory = memory,
             batch_size = batch_size,
-            max_episode_timesteps = environment.max_episode_timesteps()*(num_states_automaton+1), # needed otherwise the agent will return error, since makes more timesteps than env
-            environment = environment,
+            max_episode_timesteps = 500*(num_states_automaton+1), # needed otherwise the agent will return error, since makes more timesteps than env
+            # environment = environment,
+            actions = dict(type = 'int',shape= (1,),num_values=6),
             update_frequency = update_frequency,
             discount = discount_factor,
             states = dict(
-                gymtpl0 = dict(type = 'float',shape= environment.states().get('gymtpl0').get('shape'),min_value = -np.inf,max_value = np.inf), # state space is (x,y,theta,beep)
+                gymtpl0 = dict(type = 'float',shape= (7,),min_value = -np.inf,max_value = np.inf), # state space is (x,y,theta,beep)
                 gymtpl1 = dict(type ='float',shape=(AUTOMATON_STATE_ENCODING_SIZE,),min_value = 0.0, max_value = 1.0)
             ),
 
