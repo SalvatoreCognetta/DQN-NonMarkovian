@@ -2,3 +2,10 @@ __pycache__
 log_dir
 model
 summaries
+model/*
+.vscode
+Material - Reasoning Agents 2020-2021
+RA_project
+reasoning_agent_project
+Papers
+gym-sapientino-case

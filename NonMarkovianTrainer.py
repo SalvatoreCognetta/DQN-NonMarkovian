@@ -56,15 +56,16 @@ class NonMarkovianTrainer(object):
     def make_experience(self, curr_automaton_state, agent, states, environment, episode):
         # experience = []
         for prev_automaton_state in range(self.num_state_automaton):
-            if prev_automaton_state!= self.sink_id and prev_automaton_state!=self.num_state_automaton-1 and prev_automaton_state !=curr_automaton_state:
-                states_ = states.copy()
-                states_[1][0] = int(prev_automaton_state)
-                states_ = self.pack_states(states_)
+            if prev_automaton_state!=self.num_state_automaton-1 and prev_automaton_state !=curr_automaton_state:
+                states_ = states
+
+                states_['gymtpl1'][0] = prev_automaton_state
+                states_ = self.pack_states(tuple(states_.values()))
                 actions = agent.act(states=states_)
                 
                 # deepcopy avoid to increase env steps while iterating over automaton state
                 # to be substituted if exists a way to simulate env without increasing timestep and env state
-                states_, terminal, reward = deepcopy(environment).execute(actions=actions)
+                states_, reward, terminal, info = environment.step(actions)
     
                 #Extract gym sapientino state and the state of the automaton.
                 automaton_state = int(states_[1][0])
@@ -218,9 +219,9 @@ class NonMarkovianTrainer(object):
                     
                     states, reward, terminal, info = environment.step(actions)
 
-                    # Extract gym sapientino state and the state of the automaton.
-                    automaton_state = int(states[1][0])
-                    states = self.pack_states(states).copy()
+                    #Extract gym sapientino state and the state of the automaton.
+                    automaton_state = states[1][0]
+                    states = self.pack_states(states)
                     # Reward shaping.
                     reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
 
