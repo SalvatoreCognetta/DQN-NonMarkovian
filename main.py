@@ -18,29 +18,26 @@ from gym_sapientino.core.configurations import (
     SapientinoConfiguration,
 )
 
+from utils import colors2reward_ldlf
 from agent_config import  build_agent
-
 from NonMarkovianTrainer import NonMarkovianTrainer
 
 from argparse import ArgumentParser
 
 
+# Constants
+MIN_NUM_COLORS = 2
+MAX_NUM_COLORS = 5
+NUM_COLORS_LIST = [i for i in range(MIN_NUM_COLORS, MAX_NUM_COLORS)]
+COLORS_LIST = ['blue','red','yellow','green']
+assert len(COLORS_LIST)+1 == MAX_NUM_COLORS
 
 SINK_ID = 2
-
 DEBUG = False
 
 
-
-
-
-
-
-
 if __name__ == '__main__':
-
-
-    #Handle command line arguments
+    # Handle command line arguments
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--batch_size', type = int, default = 64,help= 'Experience batch size.')
@@ -57,57 +54,62 @@ if __name__ == '__main__':
     parser.add_argument('--path', type = str, default = None, help = "Path to the map file inside the file system.")
     parser.add_argument("--sequence", nargs="+", default=None, help="Goal sequence for the training specified as a list of strings.")
 
-
-
-
-
     args = parser.parse_args()
 
-    #Collect some information from the argument parser.
-    batch_size = args.batch_size
-    memory = args.memory
+    # Collect some information from the argument parser.
+    batch_size 	= args.batch_size
+    memory 		= args.memory
+    multi_step 	= args.multi_step
+    num_colors 	= args.num_colors
     update_frequency = args.update_frequency
-    multi_step = args.multi_step
-    num_colors = args.num_colors
-    learning_rate = args.learning_rate
-    entropy_bonus = args.entropy_bonus
-    exploration = args.exploration
+    learning_rate 	 = args.learning_rate
+    entropy_bonus 	 = args.entropy_bonus
+    exploration 	 = args.exploration
+    
+    NUM_EXPERTS = num_colors
+    EPISODES    = args.episodes
+    HIDDEN_STATE_SIZE = args.hidden_size
+
+    # Set this value here to the maximum timestep value.
+    MAX_EPISODE_TIMESTEPS = args.max_timesteps
+    # There are both the initial and the sink additional states.
+    NUM_STATES_AUTOMATON = num_colors+2
 
 
-
-
-    #Extract the map from the command line arguments
+    # Extract the map from the command line arguments
     if not args.path:
-        if num_colors == 2:
-            map_file = os.path.join('.','maps/map2_easy.txt')
-        elif num_colors == 3:
-            map_file = os.path.join('.', 'maps/map3_easy.txt')
-        elif num_colors == 4:
-            map_file = os.path.join('.','maps/map4_easy.txt')
+        if num_colors in NUM_COLORS_LIST:
+            map_path = 'maps/map' + str(num_colors) + '_easy.txt'
+            map_file = os.path.join('.', map_path)
         else:
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
         map_file = args.path
+    
+    # Read the txt map file
+    with open(map_file) as f:
+        map = """""".join(f.readlines())
+    # Show in command line
+    print(map)
 
-
-    #Extract the goal sequence form the command line arguments
+    # Extract the goal sequence form the command line arguments
     if not args.sequence:
-        if num_colors == 2:
-            colors = ['blue','green']
-        elif num_colors == 3:
-            colors = ['blue','red','green']
-        elif num_colors == 4:
-            colors = ['blue','red','yellow','green']
+        if num_colors in NUM_COLORS_LIST:
+            colors = COLORS_LIST[0:num_colors]
         else:
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
         colors = args.sequence
 
+    # Convert colors in Linear Dynamic Logic 
+    reward_ldlf = colors2reward_ldlf(colors) 
+    # Show in command line
+    print(reward_ldlf)
 
-    #Log directory for the automaton states.
+    # Log directory for the automaton states.
     log_dir = os.path.join('.','log_dir')
 
-    #Istantiate the gym sapientino environment.
+    # Istantiate the gym sapientino environment.
     agent_conf = SapientinoAgentConfiguration(
         initial_position=(2, 2),
         commands=ContinuousCommand,
@@ -117,11 +119,6 @@ if __name__ == '__main__':
         min_velocity=0.0,
     )
 
-    with open(map_file) as f:
-        map = """""".join(f.readlines())
-
-    print(map)
-
     conf = SapientinoConfiguration(
         agent_configs=(agent_conf,),
         grid_map=map,
@@ -130,25 +127,12 @@ if __name__ == '__main__':
         reward_per_step=-0.1,
     )
 
-    def colors2reward_ldlf(colors:list): # convert color list to ldlf
-        reward_ldlf = "<"
-        for i,c in enumerate(colors):
-            reward_ldlf+="!"+c+"*; "+c
-            if i<len(colors)-1:
-                reward_ldlf+="; "
-            elif i==len(colors)-1:
-                reward_ldlf+=">end"
-        return reward_ldlf
-    
-    reward_ldlf = colors2reward_ldlf(colors) 
-
-    print(reward_ldlf)
-
     environment = SapientinoCase(
         conf=conf,
         reward_ldlf=reward_ldlf,
         logdir=log_dir,
     )
+
     # environment = SapientinoCase(
 
     #     colors = colors,
@@ -173,27 +157,13 @@ if __name__ == '__main__':
 
 
 
-    #Default tensorforce update frequency is batch size.
+    # Default tensorforce update frequency is batch size.
     if not update_frequency:
         update_frequency = batch_size
 
-    #Default dqn memory.
+    # Default dqn memory.
     if not memory:
         memory = 20000 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
-
-    HIDDEN_STATE_SIZE = args.hidden_size
-
-
-
-    #There are both the initial and the sink additional states.
-    NUM_STATES_AUTOMATON = num_colors+2
-    
-
-    NUM_EXPERTS = num_colors
-
-
-    #Set this value here to the maximum timestep value.
-    MAX_EPISODE_TIMESTEPS = args.max_timesteps
 
     #Choose whether or not to visualize the environment
     VISUALIZE = True
@@ -202,13 +172,8 @@ if __name__ == '__main__':
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
     # environment = Environment.create(environment =environment,max_episode_timesteps=MAX_EPISODE_TIMESTEPS,visualize =VISUALIZE)
     # print(environment.actions())
-    #NUM_STATES_AUTOMATON = 4
-
-    #HIDDEN_STATE_SIZE = 64
 
     AUTOMATON_STATE_ENCODING_SIZE = HIDDEN_STATE_SIZE*NUM_STATES_AUTOMATON
-    #AUTOMATON_STATE_ENCODING_SIZE = HIDDEN_STATE_SIZE*NUM_EXPERTS
-
 
     discount_factor = 0.9
 
@@ -217,37 +182,29 @@ if __name__ == '__main__':
                         update_frequency=update_frequency,
                         discount_factor = discount_factor,
                         learning_rate=learning_rate,
-
                         environment = environment,
                         num_states_automaton =NUM_STATES_AUTOMATON,
                         automaton_state_encoding_size=AUTOMATON_STATE_ENCODING_SIZE,
-
                         hidden_layer_size=HIDDEN_STATE_SIZE,
-
                         exploration =exploration,
-
                         entropy_regularization=entropy_bonus,
-
                         )
 
 
-    #Debugging prints
+    # Debugging prints
     print("Istantiated an agent for training with parameters: ")
     print(args)
 
     print("The goal sequence is: ")
     print(colors)
 
-
-    trainer = NonMarkovianTrainer(agent,environment,NUM_STATES_AUTOMATON,AUTOMATON_STATE_ENCODING_SIZE,
+    # Create the trainer
+    trainer = NonMarkovianTrainer(agent,environment,NUM_STATES_AUTOMATON, 
+                                  AUTOMATON_STATE_ENCODING_SIZE,
                                   SINK_ID,num_colors=num_colors
                                   )
 
-
-    EPISODES = args.episodes
-
-    #Train the agent
-
+    # Train the agent
     training_results = trainer.train(episodes=EPISODES)
 
     print("Training of the agent complete: results are: ")
