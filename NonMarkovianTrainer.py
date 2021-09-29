@@ -1,19 +1,13 @@
+from typing import Tuple, Dict
+from tqdm.auto import tqdm
 from tensorforce.agents import Agent
 from gym_sapientino_case.env import SapientinoCase
-from tqdm.auto import tqdm
 from copy import deepcopy
 import numpy as np
 
+from utils import one_hot_encode
+
 DEBUG = False
-
-#One hot encoding for the state of the automaton
-def one_hot_encode(x,size, num_labels):
-
-    ret = np.zeros(size,dtype = np.float32)
-    if size%num_labels == 0:
-        block_size = int(size/num_labels)
-        ret[int(x)*block_size:(int(x)+1)*block_size]=1.0
-    return ret
 
 class NonMarkovianTrainer(object):
     def __init__(self,
@@ -24,7 +18,7 @@ class NonMarkovianTrainer(object):
                 sink_id: int, 
                 num_colors: int = 2,
                 act_pattern:str='act-observe'
-                ):
+                ) -> None:
 
         """
         Desc: class that implements the non markovian training (multiple colors for gym sapientino).
@@ -32,12 +26,13 @@ class NonMarkovianTrainer(object):
         "agent_params" variable. The agent, and in particular the neural network, should be already non markovian.
 
         Args:
-            @param agent: (tensorforce.agents.Agent) tensorforce agent (algrithm) that will be used to train the policy network (example: ppo, ddqn,dqn).
-            @param environment: (gym_sapientino_case.env.SapientinoCase) istance of the SapientinoCase/openAI gym environment used for training.
-            @param num_state_automaton: (int) number of states of the goal state DFA.
-            @automaton_state_encoding_size: (int) size of the binary encoding of the automaton state. See the report in report/pdf in section "Non markovian agent" for further details.
-            @sink_id: (int) the integer representing the failure state of the goal DFA.
-
+            agent: (tensorforce.agents.Agent) tensorforce agent (algrithm) that will be used to train the policy network (example: ppo, ddqn,dqn).
+            environment: (gym_sapientino_case.env.SapientinoCase) istance of the SapientinoCase/openAI gym environment used for training.
+            num_state_automaton: (int) number of states of the goal state DFA.
+            automaton_encoding_size: (int) size of the binary encoding of the automaton state. See the report in report/pdf in section "Non markovian agent" for further details.
+            sink_id: (int) the integer representing the failure state of the goal DFA.
+            num_colors: (int) the integer representing the failure state of the goal DFA.
+            act_pattern: (str) interaction pattern used int tensorforce, can be act-observe or act-experience-update (not working for tensorforce bug, reward not grow)
         """
         self.num_state_automaton = num_state_automaton
         self.automaton_encoding_size = automaton_encoding_size
@@ -74,62 +69,53 @@ class NonMarkovianTrainer(object):
                 agent.observe(terminal=terminal, reward=reward)            
                 # experience.append([prev_states,prev_automaton_state,actions,reward,states,automaton_state])
 
-    def get_reward_automaton(self, automaton_state, prev_automaton_state, reward, terminal, episode):
+    def get_reward_automaton(self, automaton_state, prev_automaton_state, reward, terminal, episode) -> Tuple[float, bool]:
+        # Terminate the episode with a negative reward
+        # if the goal DFA reaches SINK state (failure).
+        if automaton_state == self.sink_id:
+            reward = -500.0
+            terminal = True
+            return reward, terminal
+
         if self.num_colors == 2:
-
-            if automaton_state == self.sink_id:
-                reward = -500.0
-                terminal = True
-
-            elif automaton_state == 1 and prev_automaton_state==0:
+            if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 
-            elif automaton_state == 3 and prev_automaton_state==1:
+            elif automaton_state == 3 and prev_automaton_state == 1:
                 reward = 500.0
                 print("Visited goal on episode: ", episode)
                 terminal = True
 
         elif self.num_colors == 3:
-
-            if automaton_state == self.sink_id:
-                reward = -500.0
-                terminal = True
-
-            elif automaton_state == 1 and prev_automaton_state==0:
+            if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 
-            elif automaton_state == 3 and prev_automaton_state==1:
+            elif automaton_state == 3 and prev_automaton_state == 1:
                 reward = 500.0
 
-            elif automaton_state ==4 and prev_automaton_state == 3:
+            elif automaton_state == 4 and prev_automaton_state == 3:
                 reward = 500.0
                 print("Visited goal on episode: ", episode)
                 terminal = True
 
         elif self.num_colors == 4:
-
-            #Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
-            if automaton_state == self.sink_id:
-                reward = -500.0
-                terminal = True
-
-            elif automaton_state == 1 and prev_automaton_state==0:
+            if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 
-            elif automaton_state == 3 and prev_automaton_state==1:
+            elif automaton_state == 3 and prev_automaton_state == 1:
                 reward = 500.0
 
-            elif automaton_state ==4 and prev_automaton_state == 3:
+            elif automaton_state == 4 and prev_automaton_state == 3:
                 reward = 500.0
 
-            elif automaton_state == 5 and prev_automaton_state ==4:
+            elif automaton_state == 5 and prev_automaton_state == 4:
                 reward = 500.0
                 print("Visited goal on episode: ", episode)
                 terminal = True
 
         return reward, terminal
 
-    def pack_states(self,states):
+    def pack_states(self,states) -> Dict[np.ndarray, np.ndarray]:
         """
             Desc: utility function that packs the state dictionary so that it can be passed as input to the
                 non markovian agent.
@@ -148,47 +134,34 @@ class NonMarkovianTrainer(object):
         obs = states[0]
         automaton_state = states[1][0]
 
-
-        """
-            Prepare the encoded automaton state.
-        """
+        # Prepare the encoded automaton state.
         one_hot_encoding = one_hot_encode(automaton_state,
                                             self.automaton_encoding_size,self.num_state_automaton)
 
         return dict(gymtpl0 = obs,
                     gymtpl1 = one_hot_encoding)
 
-    def train(self,episodes = 1000):
 
+    def train(self,episodes = 1000) -> Dict[float, float]:
         """
-            @param episodes: (int) number of training episodes.
+            episodes: (int) number of training episodes.
         """
+
+        # The training loop is inspired by the Tensorforce agent "act observe" paradigm 
+        # https://tensorforce.readthedocs.io/en/latest/basics/getting-started.html
+
         cum_reward = 0.0
-
         agent = self.agent
         environment = self.environment
-
-
-
-        """
-            The training loop is inspired by the Tensorforce agent "act observe" paradigm 
-            https://tensorforce.readthedocs.io/en/latest/basics/getting-started.html
-        """
-
-
-
         try:
-
             # Train for N episodes
             for episode in tqdm(range(episodes),desc='training',leave = True):
-
                 # Record episode experience
                 episode_states = list()
                 episode_internals = list()
                 episode_actions = list()
                 episode_terminal = list()
                 episode_reward = list()
-
 
                 terminal = False
                 # Episode using independent-act and agent.intial_internals()
@@ -202,35 +175,34 @@ class NonMarkovianTrainer(object):
                 ep_reward = 0.0
                 while not terminal:
                     environment.render()
-
                     prev_states = states.copy()
-
-                    # act-experience-update
-                    episode_states.append(states)
-                    episode_internals.append(internals)
 
                     if self.act_pattern == 'act-observe':
                         actions = agent.act(states=states)
                     elif self.act_pattern == 'act-experience-update':
+                        # act-experience-update
+                        episode_states.append(states)
+                        episode_internals.append(internals)
                         actions, internals = agent.act(states=states, internals=internals, independent=True)
-
-                    # act-experience-update
-                    episode_actions.append(actions)
+                        # act-experience-update
+                        episode_actions.append(actions)
                     
                     states, reward, terminal, info = environment.step(actions)
 
-                    #Extract gym sapientino state and the state of the automaton.
+                    # Extract gym sapientino state and the state of the automaton.
                     automaton_state = states[1][0]
                     states = self.pack_states(states)
                     # Reward shaping.
                     reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
 
-                    # act-experience-update
-                    episode_terminal.append(terminal)
-                    episode_reward.append(reward)
+                    if self.act_pattern == 'act-experience-update':
+                        # act-experience-update
+                        episode_terminal.append(terminal)
+                        episode_reward.append(reward)
                     
                     if reward != -0.1:
-                        print(automaton_state, terminal, reward, info)
+                        print("Automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
+
                     prevAutState = int(automaton_state)
                     ep_reward += reward
                     cum_reward += reward
@@ -285,52 +257,47 @@ class NonMarkovianTrainer(object):
             agent.close()
             environment.close()
 
-
             return dict(cumulative_reward_nodiscount = cum_reward,
                         average_reward_nodiscount = cum_reward/episodes)
         finally:
-
            #Let the user interrupt
            pass
 
-    def get_reward(self, automaton_state, prev_automaton_state, reward, terminal, episode):
+    def get_reward(self, automaton_state, prev_automaton_state, reward, terminal, episode) -> Tuple[float, bool]:
         if self.num_colors == 2:
-
-            if automaton_state == 1 and prev_automaton_state==0:
+            if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 
-            elif automaton_state == 2 and prev_automaton_state==1:
+            elif automaton_state == 2 and prev_automaton_state == 1:
                 reward = 500.0
                 print("Visited goal on episode: ", episode)
                 terminal = True
 
         elif self.num_colors == 3:
-
-            if automaton_state == 1 and prev_automaton_state==0:
+            if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 
-            elif automaton_state == 2 and prev_automaton_state==1:
+            elif automaton_state == 2 and prev_automaton_state == 1:
                 reward = 500.0
 
-            elif automaton_state ==3 and prev_automaton_state == 2:
+            elif automaton_state == 3 and prev_automaton_state == 2:
                 reward = 500.0
                 print("Visited goal on episode: ", episode)
                 terminal = True
 
         elif self.num_colors == 4:
-
             #Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
             
-            if automaton_state == 1 and prev_automaton_state==0:
+            if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 
-            elif automaton_state == 2 and prev_automaton_state==1:
+            elif automaton_state == 2 and prev_automaton_state == 1:
                 reward = 500.0
 
-            elif automaton_state ==3 and prev_automaton_state == 2:
+            elif automaton_state == 3 and prev_automaton_state == 2:
                 reward = 500.0
 
-            elif automaton_state == 4 and prev_automaton_state ==3:
+            elif automaton_state == 4 and prev_automaton_state == 3:
                 reward = 500.0
                 print("Visited goal on episode: ", episode)
                 terminal = True
