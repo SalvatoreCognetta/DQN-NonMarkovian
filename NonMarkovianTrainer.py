@@ -196,7 +196,8 @@ class NonMarkovianTrainer(object):
                 # automaton_state = states['gymtpl1'][0]
                 states = self.pack_states(states)
                 prevAutState = 0
-                #Save the reward that you reach in the episode inside a linked list. This will be used for nice plots in the report.
+                # Save the reward that you reach in the episode inside a linked list. 
+                # This will be used for nice plots in the report.
                 ep_reward = 0.0
                 while not terminal:
                     environment.render()
@@ -217,7 +218,7 @@ class NonMarkovianTrainer(object):
                     
                     states, reward, terminal, info = environment.step(actions)
 
-                    #Extract gym sapientino state and the state of the automaton.
+                    # Extract gym sapientino state and the state of the automaton.
                     automaton_state = int(states[1][0])
                     states = self.pack_states(states).copy()
                     # Reward shaping.
