@@ -1,0 +1,92 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\bibstyle{abbrvnat}
+\citation{dfa}
+\citation{schulman2017proximal_PPO}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Deterministic Finite Automata}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Proximal Policy Optimization}{1}{section.3}\protected@file@percent }
+\newlabel{eq:policyGradientObj}{{1}{2}{Proximal Policy Optimization}{equation.3.1}{}}
+\newlabel{eq:advantageDefinition}{{2}{2}{Proximal Policy Optimization}{equation.3.2}{}}
+\citation{schulman2017proximal_PPO}
+\citation{schulman2017proximal_PPO}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Figure representing the effect of the clipping operation on the surrogate objective function. The figure is taken from the paper \cite  {schulman2017proximal_PPO}.}}{3}{figure.1}\protected@file@percent }
+\newlabel{fig:ClippingObjective}{{1}{3}{Figure representing the effect of the clipping operation on the surrogate objective function. The figure is taken from the paper \cite {schulman2017proximal_PPO}}{figure.1}{}}
+\newlabel{eq:clippedSurrogateObjective}{{3}{3}{Proximal Policy Optimization}{equation.3.3}{}}
+\newlabel{eq:ratioR}{{4}{3}{Proximal Policy Optimization}{equation.3.4}{}}
+\citation{schulman2017proximal_PPO}
+\citation{schulman2017proximal_PPO}
+\newlabel{eq:completeObjective}{{5}{4}{Proximal Policy Optimization}{equation.3.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4} Markov Decision Process}{4}{section.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces MDP example}}{5}{figure.2}\protected@file@percent }
+\newlabel{fig:mdp}{{2}{5}{MDP example}{figure.2}{}}
+\newlabel{one}{{7}{5}{Markov Decision Process}{equation.4.7}{}}
+\newlabel{two}{{8}{5}{Markov Decision Process}{equation.4.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Non Markovian Rewards Decision Processes}{5}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Temporal rewards specifications}{5}{section*.1}\protected@file@percent }
+\citation{Gym-Sapientino}
+\@writefile{toc}{\contentsline {paragraph}{Rewarding with automata}{6}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Gym-Sapientino}{6}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Temporal Goal on Gym-Sapientino}{6}{subsection.6.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Representation of the problem at hand in term of automata}}{7}{figure.3}\protected@file@percent }
+\newlabel{fig:stati}{{3}{7}{Representation of the problem at hand in term of automata}{figure.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}The non markovian agent}{7}{section.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Baseline implementation for the non markovian policy network. It takes as input both an observation \(o\), the state vector in our problem, and the state of the goal DFA \(q\). Then, according to the state of the automaton, the agents selects one of the \(|Q|\) \textit  {separate experts} (the markovian agents we have discussed so far) for the action selection. This image is taken from the slides of Roberto Cipollone for the Reasoning Agent course held in Sapienza in 2020/2021.}}{9}{figure.4}\protected@file@percent }
+\newlabel{fig:baselineSchema}{{4}{9}{Baseline implementation for the non markovian policy network. It takes as input both an observation \(o\), the state vector in our problem, and the state of the goal DFA \(q\). Then, according to the state of the automaton, the agents selects one of the \(|Q|\) \textit {separate experts} (the markovian agents we have discussed so far) for the action selection. This image is taken from the slides of Roberto Cipollone for the Reasoning Agent course held in Sapienza in 2020/2021}{figure.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Implementation Details}{10}{section.8}\protected@file@percent }
+\newlabel{sec:ImplementationDetails}{{8}{10}{Implementation Details}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Proposed network implementation}{10}{subsection.8.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces This sketch represents the non markovian policy network scheme implemented as a two hidden layer fully connected neural neural network. The architecture in the figure may employed in solving the problem of visiting a sequence of three colors (\color  {blue} blue \color  {black}, \color  {red} red \color  {black} and \color  {green} green \color  {black}). In \color  {magenta} magenta\color  {black}, we represent the automaton state binary vector as described in the section [\ref  {sec:ImplementationDetails}]. The \color  {blue} blue \color  {black} neurons represent the policy network of the markovian agent that is trained to reach the \color  {blue} blue \color  {black} colored tile in the map; the same holds for the \color  {red} red \color  {black} and the \color  {green} green \color  {black} neurons.}}{11}{figure.5}\protected@file@percent }
+\newlabel{fig:nonMarkovianNetwork}{{5}{11}{This sketch represents the non markovian policy network scheme implemented as a two hidden layer fully connected neural neural network. The architecture in the figure may employed in solving the problem of visiting a sequence of three colors (\color {blue} blue \color {black}, \color {red} red \color {black} and \color {green} green \color {black}). In \color {magenta} magenta\color {black}, we represent the automaton state binary vector as described in the section [\ref {sec:ImplementationDetails}]. The \color {blue} blue \color {black} neurons represent the policy network of the markovian agent that is trained to reach the \color {blue} blue \color {black} colored tile in the map; the same holds for the \color {red} red \color {black} and the \color {green} green \color {black} neurons}{figure.5}{}}
+\citation{rf}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Network Description}{13}{subsection.8.2}\protected@file@percent }
+\newlabel{network}{{8.2}{13}{Network Description}{subsection.8.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Reward shaping}{14}{subsection.8.3}\protected@file@percent }
+\newlabel{sec:rewardShaping}{{8.3}{14}{Reward shaping}{subsection.8.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reward shaping for two colors case; this mechanism can be extended also to three colors case.}}{14}{figure.6}\protected@file@percent }
+\newlabel{fig:reward shaping}{{6}{14}{Reward shaping for two colors case; this mechanism can be extended also to three colors case}{figure.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Experimental environment}{14}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Trials}{14}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Experiment with two colors }{15}{section.11}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces 4x9 Gym Sapientino map for the experiment with two colors. The initial position is in the cell [2,4] in the center of the map.}}{15}{figure.7}\protected@file@percent }
+\newlabel{fig:mapTwoColors}{{7}{15}{4x9 Gym Sapientino map for the experiment with two colors. The initial position is in the cell [2,4] in the center of the map}{figure.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the two experiments with two colors}}{16}{table.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12}Experiments with two colors with bigger maps}{16}{section.12}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces 7x10 Gym-Sapientino map. The initial position is in cell [4,6] more or less in the center of the map.}}{17}{figure.8}\protected@file@percent }
+\newlabel{fig:twoColorIntermediateSizeMap}{{8}{17}{7x10 Gym-Sapientino map. The initial position is in cell [4,6] more or less in the center of the map}{figure.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.1}First Trial}{17}{subsection.12.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with two colors in the first bigger map}}{17}{table.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.2}Second Trial}{17}{subsection.12.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces 9x17 Gym-Sapientino map. The initial position is in cell [4,8] in the center of the map. }}{17}{figure.9}\protected@file@percent }
+\newlabel{fig:bigmap}{{9}{17}{9x17 Gym-Sapientino map. The initial position is in cell [4,8] in the center of the map}{figure.9}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with two colors in the second bigger map}}{18}{table.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13}Experiment with three colors}{18}{section.13}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces 4x9 Gym Sapientino map for the experiment with three colors. The initial position is in cell [4,4] at the bottom of the map.}}{19}{figure.10}\protected@file@percent }
+\newlabel{fig:mapThreeColors}{{10}{19}{4x9 Gym Sapientino map for the experiment with three colors. The initial position is in cell [4,4] at the bottom of the map}{figure.10}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Plots related to the first trial with three colors and with our custom network.}}{20}{figure.11}\protected@file@percent }
+\newlabel{fig:threeColorsPlotsCustom}{{11}{20}{Plots related to the first trial with three colors and with our custom network}{figure.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Plots related to the first trial with three colors and with auto network.}}{21}{figure.12}\protected@file@percent }
+\newlabel{fig:threeColorsPlotsAuto}{{12}{21}{Plots related to the first trial with three colors and with auto network}{figure.12}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents on the three color map. The proposed implementation features 193 neurons on the two hidden layers. This happens since in order to reach the temporal goal we need 3 experts. Using 64 neurons for each expert we have \(193 = 64*3\) hidden neurons.}}{21}{table.4}\protected@file@percent }
+\newlabel{tab:threeColorMapAgentTable}{{4}{21}{Table containing the relevant hyperparameter configuration of the tested agents on the three color map. The proposed implementation features 193 neurons on the two hidden layers. This happens since in order to reach the temporal goal we need 3 experts. Using 64 neurons for each expert we have \(193 = 64*3\) hidden neurons}{table.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {14}Conclusion and result discussion}{21}{section.14}\protected@file@percent }
+\bibdata{main}
+\bibstyle{plain}
+\bibcite{Gym-Sapientino}{{1}{}{{}}{{}}}
+\providecommand\NAT@force@numbers{}\NAT@force@numbers
