@@ -5,6 +5,8 @@
 ## Clone temprl project for synthetic experience
 In order to modify the temprl repo (used by gym-sapientino-case), before the installation of this repo, clone temprl in another directory:  
 `git clone git@github.com:SalvatoreCognetta/temprl.git && cd temprl && git checkout develop`
+
+For the code look at the [GitHub repository](https://github.com/SalvatoreCognetta/temprl/tree/develop).
 ### Modify TemporalGoalWrapper class
 Changes are done in TemporalGoalWrapper class under temprl/wrapper.py.  
 After a modification on the temprl forked project:
