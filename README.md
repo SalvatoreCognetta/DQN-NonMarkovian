@@ -3,14 +3,14 @@
 `git clone https://github.com/SalvatoreCognetta/reasoning-agent-project.git && cd reasoning-agent-project`
 
 ## Clone temprl project for synthetic experience
-In order to modify the temprl repo (used by gym-sapientino-case), before the install clone the temprl in another directory:  
-`git clone git@github.com:SalvatoreCognetta/temprl.git && cd reasoning-agent-project && git checkout develop`
+In order to modify the temprl repo (used by gym-sapientino-case), before the installation of this repo, clone temprl in another directory:  
+`git clone git@github.com:SalvatoreCognetta/temprl.git && cd temprl && git checkout develop`
 ### Modify TemporalGoalWrapper class
 Changes are done in TemporalGoalWrapper class under temprl/wrapper.py.  
 After a modification on the temprl forked project:
 1. push the modifications;
-2. remove the directories of temprl inside conda env via: `rm -rvf /home/NAME_TO_CHAGE/anaconda3/envs/raenv/lib/python3.8/site-packages/temprl*` for now I don't know how to reinstall without deleting.
-3. reinstall gym-sapientino via pip install .
+2. remove the directories of temprl inside conda env via: `rm -rvf /home/NAME_TO_CHAGE/anaconda3/envs/raenv/lib/python3.8/site-packages/temprl*` (bug of poetry: [virtual env not updates]([https://link](https://github.com/python-poetry/poetry/issues/2921) ))
+3. reinstall gym-sapientino via `pip install .`
 
 ## Setup the project
 
