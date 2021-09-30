@@ -725,7 +725,6 @@ pythomata = "0.3.2"
 type = "git"
 url = "git@github.com:SalvatoreCognetta/temprl.git"
 reference = "develop"
-resolved_reference = "409ac09215f1afec690fd07a34113ddc0720c103"
 
 [[package]]
 name = "toml"
