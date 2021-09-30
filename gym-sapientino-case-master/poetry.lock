@@ -709,7 +709,6 @@ mpmath = ">=0.19"
 
 [[package]]
 name = "temprl"
-version = "0.3.0"
 description = "Framework for Reinforcement Learning with Temporal Goals."
 category = "main"
 optional = false
@@ -725,6 +724,7 @@ pythomata = "0.3.2"
 type = "git"
 url = "git@github.com:SalvatoreCognetta/temprl.git"
 reference = "develop"
+resolved_reference = "ee1d5cfc278e998e10b97cbedd13295b205586aa"
 
 [[package]]
 name = "toml"
