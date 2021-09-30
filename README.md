@@ -9,7 +9,7 @@ In order to modify the temprl repo (used by gym-sapientino-case), before the ins
 Changes are done in TemporalGoalWrapper class under temprl/wrapper.py.  
 After a modification on the temprl forked project:
 1. push the modifications;
-2. remove the directories of temprl inside conda env via: `rm -rvf /home/NAME_TO_CHAGE/anaconda3/envs/raenv/lib/python3.8/site-packages/temprl` for now I don't know how to reinstall without deleting.
+2. remove the directories of temprl inside conda env via: `rm -rvf /home/NAME_TO_CHAGE/anaconda3/envs/raenv/lib/python3.8/site-packages/temprl*` for now I don't know how to reinstall without deleting.
 3. reinstall gym-sapientino via pip install .
 
 ## Setup the project
