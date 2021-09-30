@@ -18,7 +18,7 @@ def build_agent(agent, batch_size,environment,num_states_automaton,
         agent: (string) the name of the deep reinforcement learning algorithm used to train the agent.
         memory: (int) the size of the agent memory.
         batch_size: (int) the size of experience batch collected by the agent.
-        environment: (tensorforce.environments.Environment) istance of the tensorforce environment in which the is trained.
+        environment: (gym_sapientino_case.env.SapientinoCase) istance of the SapientinoCase environment in which the agent is trained.
         num_states_automaton: (int) number of states of the goal state DFA.
         automaton_state_encoding_size: (int) size of the binary encoding of the automaton state. See the report in report/pdf in section "Non markovian agent" for further details.
         hidden_layer_size: (int) number of neurons of the policy network hidden layer (default implementation features two hidden layers with an equal number of neurons).

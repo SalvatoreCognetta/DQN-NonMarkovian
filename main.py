@@ -146,6 +146,7 @@ if __name__ == '__main__':
 
     # Limit the length of the episode of gym sapientino.
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
+    environment.env_synthetic = TimeLimit(environment.env_synthetic, MAX_EPISODE_TIMESTEPS)
 
     AUTOMATON_STATE_ENCODING_SIZE = HIDDEN_STATE_SIZE*NUM_STATES_AUTOMATON
 
@@ -183,5 +184,3 @@ if __name__ == '__main__':
 
     print("Training of the agent complete: results are: ")
     print(training_results)
-
-

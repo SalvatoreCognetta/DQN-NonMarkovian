@@ -17,8 +17,8 @@ class NonMarkovianTrainer(object):
                 automaton_encoding_size: int,
                 sink_id: int, 
                 num_colors: int = 2,
-                act_pattern:str='act-observe',
-                synthetic_exp:bool=False
+                act_pattern:str='act-experience-update',
+                synthetic_exp:bool=True
                 ) -> None:
 
         """
@@ -46,6 +46,7 @@ class NonMarkovianTrainer(object):
         self.synthetic = synthetic_exp
 
         assert act_pattern in ['act-observe', 'act-experience-update']
+        assert not synthetic_exp or (synthetic_exp and act_pattern == 'act-experience-update')
 
         if DEBUG:
             print("\n################### Agent architecture ###################\n")
@@ -118,7 +119,7 @@ class NonMarkovianTrainer(object):
 
         return reward, terminal
 
-    def pack_states(self,states) -> Dict[np.ndarray, np.ndarray]:
+    def pack_states(self,states, synthetic_case=False) -> Dict[np.ndarray, np.ndarray]:
         """
             Desc: utility function that packs the state dictionary so that it can be passed as input to the
                 non markovian agent.
@@ -135,7 +136,10 @@ class NonMarkovianTrainer(object):
         """
 
         obs = states[0]
-        automaton_state = states[1][0]
+        if synthetic_case:
+            automaton_state = states[1]
+        else:
+            automaton_state = states[1][0]
 
         # Prepare the encoded automaton state.
         one_hot_encoding = one_hot_encode(automaton_state,
@@ -170,6 +174,8 @@ class NonMarkovianTrainer(object):
                 # Episode using independent-act and agent.intial_internals()
                 internals = agent.initial_internals()
                 states = environment.reset()
+                print(environment)
+                print(states)
                 # automaton_state = states['gymtpl1'][0]
                 states = self.pack_states(states)
                 prevAutState = 0
@@ -218,46 +224,66 @@ class NonMarkovianTrainer(object):
                     # else:
                     #     self.make_experience(automaton_state, agent, prev_states, environment, episode)
                 
-                # if self.synthetic:
-                # while not terminal:
-                #     environment.render()
-                #     prev_states = states.copy()
+                
 
-                #     if self.act_pattern == 'act-observe':
-                #         actions = agent.act(states=states)
-                #     elif self.act_pattern == 'act-experience-update':
-                #         # act-experience-update
-                #         episode_states.append(states)
-                #         episode_internals.append(internals)
-                #         actions, internals = agent.act(states=states, internals=internals, independent=True)
-                #         # act-experience-update
-                #         episode_actions.append(actions)
-                    
-                #     states, reward, terminal, info = environment.step(actions)
+                if self.synthetic:
+                    # Record synthetic episode experience
+                    synthetic_episode_states = list()
+                    synthetic_episode_internals = list()
+                    synthetic_episode_actions = list()
+                    synthetic_episode_terminal = list()
+                    synthetic_episode_reward = list()
 
-                #     # Extract gym sapientino state and the state of the automaton.
-                #     automaton_state = states[1][0]
-                #     states = self.pack_states(states)
-                #     # Reward shaping.
-                #     reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+                    terminal = False
+                    # Episode using independent-act and agent.intial_internals()
+                    synthetic_internals = agent.initial_internals()
+                    synthetic_environment = environment.get_synthetic_env()
+                    states = synthetic_environment.reset()
+                    print(synthetic_environment)
+                    # states[1] = [states[1]]
+                    print(states)
 
-                #     if self.act_pattern == 'act-experience-update':
-                #         # act-experience-update
-                #         episode_terminal.append(terminal)
-                #         episode_reward.append(reward)
-                    
-                #     if reward != -0.1:
-                #         print("Automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
+                    # automaton_state = states['gymtpl1'][0]
+                    states = self.pack_states(states, synthetic_case=True)
+                    prevAutState = 0
+                    # Save the reward that you reach in the episode inside a linked list. 
+                    # This will be used for nice plots in the report.
+                    ep_reward = 0.0
+                    while not terminal:
+                        # synthetic_environment.render()
+                        prev_states = states.copy()
 
-                #     prevAutState = int(automaton_state)
-                #     ep_reward += reward
-                #     cum_reward += reward
-                    
-                #     if self.act_pattern == 'act-observe':
-                #         agent.observe(terminal=terminal, reward=reward)
-  
-                #     if terminal:
-                #         states = environment.reset()
+                        # act-experience-update
+                        synthetic_episode_states.append(states)
+                        synthetic_episode_internals.append(internals)
+                        actions, synthetic_internals = agent.act(states=states, internals=internals, independent=True)
+                        # act-experience-update
+                        synthetic_episode_actions.append(actions)
+                        
+                        states, reward, terminal, info = synthetic_environment.step(actions)
+
+                        # Extract gym sapientino state and the state of the automaton.
+                        automaton_state = states[1][0]
+                        states = self.pack_states(states)
+                        # Reward shaping.
+                        reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+
+                        # act-experience-update
+                        synthetic_episode_terminal.append(terminal)
+                        synthetic_episode_reward.append(reward)
+                        
+                        if reward != -0.1:
+                            print("Synthetic automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
+
+                        prevAutState = int(automaton_state)
+                        ep_reward += reward
+                        cum_reward += reward
+                        
+                        if self.act_pattern == 'act-observe':
+                            agent.observe(terminal=terminal, reward=reward)
+
+                        if terminal:
+                            states = synthetic_environment.reset()
 
                 print('Episode {}: {}'.format(episode, ep_reward))
 
@@ -267,6 +293,13 @@ class NonMarkovianTrainer(object):
                         states=episode_states, internals=episode_internals, actions=episode_actions,
                         terminal=episode_terminal, reward=episode_reward
                     )
+
+                    if self.synthetic:
+                        # Feed synthetic experience to agent
+                        agent.experience(
+                            states=synthetic_episode_states, internals=synthetic_episode_internals, actions=synthetic_episode_actions,
+                            terminal=synthetic_episode_terminal, reward=synthetic_episode_reward
+                        )
 
                     # Perform update
                     agent.update()
