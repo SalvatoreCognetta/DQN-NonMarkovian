@@ -86,7 +86,7 @@ class SapientinoCase(gym.Wrapper):
                 Path(logdir) / "reward-dfa.dot", format="pdf")
         print("> Parsed")
 
-        env = TemporalGoalWrapper(
+        env_ = TemporalGoalWrapper(
             env=env,
             temp_goals=[
                 TemporalGoal(
@@ -95,14 +95,17 @@ class SapientinoCase(gym.Wrapper):
                 )],
             fluent_extractor=ColorExtractor(env_with_features),
         )
-        
-        env_synthetic = TemporalGoalWrapperSynthetic(
+
+        self.env_synthetic = TemporalGoalWrapperSynthetic(
             env=env,
             automaton=dfa
         )
 
         # Save
-        super().__init__(env)
+        super().__init__(env_)
+
+    def get_synthetic_env(self) -> TemporalGoalWrapperSynthetic:
+        return self.env_synthetic
 
 
 class ColorExtractor:
