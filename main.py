@@ -133,30 +133,6 @@ if __name__ == '__main__':
         logdir=log_dir,
     )
 
-    # environment = SapientinoCase(
-
-    #     colors = colors,
-
-    #     params = dict(
-    #         reward_per_step=-1.0,
-    #         reward_outside_grid=0.0,
-    #         reward_duplicate_beep=0.0,
-    #         acceleration=0.4,
-    #         angular_acceleration=15.0,
-    #         max_velocity=0.6,
-    #         min_velocity=0.4,
-    #         max_angular_vel=40,
-    #         initial_position=[4, 2],
-    #         tg_reward=1000.0,
-    #     ),
-
-    #     map_file = map_file,
-    #     logdir =log_dir
-
-    # )
-
-
-
     # Default tensorforce update frequency is batch size.
     if not update_frequency:
         update_frequency = batch_size
@@ -165,13 +141,11 @@ if __name__ == '__main__':
     if not memory:
         memory = 20000 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
 
-    #Choose whether or not to visualize the environment
+    # Choose whether or not to visualize the environment
     VISUALIZE = True
 
     # Limit the length of the episode of gym sapientino.
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
-    # environment = Environment.create(environment =environment,max_episode_timesteps=MAX_EPISODE_TIMESTEPS,visualize =VISUALIZE)
-    # print(environment.actions())
 
     AUTOMATON_STATE_ENCODING_SIZE = HIDDEN_STATE_SIZE*NUM_STATES_AUTOMATON
 

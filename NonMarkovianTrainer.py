@@ -17,7 +17,8 @@ class NonMarkovianTrainer(object):
                 automaton_encoding_size: int,
                 sink_id: int, 
                 num_colors: int = 2,
-                act_pattern:str='act-observe'
+                act_pattern:str='act-observe',
+                synthetic_exp:bool=False
                 ) -> None:
 
         """
@@ -33,6 +34,7 @@ class NonMarkovianTrainer(object):
             sink_id: (int) the integer representing the failure state of the goal DFA.
             num_colors: (int) the integer representing the failure state of the goal DFA.
             act_pattern: (str) interaction pattern used int tensorforce, can be act-observe or act-experience-update (not working for tensorforce bug, reward not grow)
+            synthetic_exp: (bool) if true feeds the network with synthetic states
         """
         self.num_state_automaton = num_state_automaton
         self.automaton_encoding_size = automaton_encoding_size
@@ -41,6 +43,7 @@ class NonMarkovianTrainer(object):
         self.environment = environment
         self.num_colors = num_colors
         self.act_pattern = act_pattern
+        self.synthetic = synthetic_exp
 
         assert act_pattern in ['act-observe', 'act-experience-update']
 
@@ -142,7 +145,7 @@ class NonMarkovianTrainer(object):
                     gymtpl1 = one_hot_encoding)
 
 
-    def train(self,episodes = 1000) -> Dict[float, float]:
+    def train(self, episodes = 1000) -> Dict[float, float]:
         """
             episodes: (int) number of training episodes.
         """
@@ -215,6 +218,47 @@ class NonMarkovianTrainer(object):
                     # else:
                     #     self.make_experience(automaton_state, agent, prev_states, environment, episode)
                 
+                # if self.synthetic:
+                # while not terminal:
+                #     environment.render()
+                #     prev_states = states.copy()
+
+                #     if self.act_pattern == 'act-observe':
+                #         actions = agent.act(states=states)
+                #     elif self.act_pattern == 'act-experience-update':
+                #         # act-experience-update
+                #         episode_states.append(states)
+                #         episode_internals.append(internals)
+                #         actions, internals = agent.act(states=states, internals=internals, independent=True)
+                #         # act-experience-update
+                #         episode_actions.append(actions)
+                    
+                #     states, reward, terminal, info = environment.step(actions)
+
+                #     # Extract gym sapientino state and the state of the automaton.
+                #     automaton_state = states[1][0]
+                #     states = self.pack_states(states)
+                #     # Reward shaping.
+                #     reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+
+                #     if self.act_pattern == 'act-experience-update':
+                #         # act-experience-update
+                #         episode_terminal.append(terminal)
+                #         episode_reward.append(reward)
+                    
+                #     if reward != -0.1:
+                #         print("Automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
+
+                #     prevAutState = int(automaton_state)
+                #     ep_reward += reward
+                #     cum_reward += reward
+                    
+                #     if self.act_pattern == 'act-observe':
+                #         agent.observe(terminal=terminal, reward=reward)
+  
+                #     if terminal:
+                #         states = environment.reset()
+
                 print('Episode {}: {}'.format(episode, ep_reward))
 
                 if self.act_pattern == 'act-experience-update':
@@ -253,7 +297,7 @@ class NonMarkovianTrainer(object):
                 
 
 
-            #Close both the agent and the environment.
+            # Close both the agent and the environment.
             agent.close()
             environment.close()
 
@@ -286,7 +330,7 @@ class NonMarkovianTrainer(object):
                 terminal = True
 
         elif self.num_colors == 4:
-            #Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
+            # Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
             
             if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0

@@ -16,7 +16,7 @@ from gym_sapientino.wrappers.gym import SingleAgentWrapper
 from logaut import ldl2dfa
 from pylogics.parsers import parse_ldl
 from pythomata.core import Rendering as RenderingDFA
-from temprl.wrapper import TemporalGoal, TemporalGoalWrapper
+from temprl.wrapper import TemporalGoal, TemporalGoalWrapper, TemporalGoalWrapperSynthetic
 
 # One map
 _default_map = """\
@@ -94,6 +94,11 @@ class SapientinoCase(gym.Wrapper):
                     automaton=dfa,
                 )],
             fluent_extractor=ColorExtractor(env_with_features),
+        )
+        
+        env_synthetic = TemporalGoalWrapperSynthetic(
+            env=env,
+            automaton=dfa
         )
 
         # Save
