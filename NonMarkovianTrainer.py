@@ -280,19 +280,24 @@ class NonMarkovianTrainer(object):
                 print('Synthetic Episode {}: {}'.format(episode, ep_reward))
 
                 if self.act_pattern == 'act-experience-update':
+
+                    if self.synthetic:
+                        episode_states.extend(synthetic_episode_states)
+                        episode_internals.extend(synthetic_episode_internals)
+                        episode_actions.extend(synthetic_episode_actions)
+                        episode_terminal.extend(synthetic_episode_terminal)
+                        episode_reward.extend(synthetic_episode_reward)
+                        # # Feed synthetic experience to agent
+                        # agent.experience(
+                        #     states=synthetic_episode_states, internals=synthetic_episode_internals, actions=synthetic_episode_actions,
+                        #     terminal=synthetic_episode_terminal, reward=synthetic_episode_reward
+                        # )
+
                     # Feed recorded experience to agent
                     agent.experience(
                         states=episode_states, internals=episode_internals, actions=episode_actions,
                         terminal=episode_terminal, reward=episode_reward
                     )
-
-                    if self.synthetic:
-                        # Feed synthetic experience to agent
-                        agent.experience(
-                            states=synthetic_episode_states, internals=synthetic_episode_internals, actions=synthetic_episode_actions,
-                            terminal=synthetic_episode_terminal, reward=synthetic_episode_reward
-                        )
-
                     # Perform update
                     agent.update()
                 
