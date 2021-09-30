@@ -119,7 +119,7 @@ class NonMarkovianTrainer(object):
 
         return reward, terminal
 
-    def pack_states(self,states, synthetic_case=False) -> Dict[np.ndarray, np.ndarray]:
+    def pack_states(self,states) -> Dict[np.ndarray, np.ndarray]:
         """
             Desc: utility function that packs the state dictionary so that it can be passed as input to the
                 non markovian agent.
@@ -136,10 +136,7 @@ class NonMarkovianTrainer(object):
         """
 
         obs = states[0]
-        if synthetic_case:
-            automaton_state = states[1]
-        else:
-            automaton_state = states[1][0]
+        automaton_state = states[1][0]
 
         # Prepare the encoded automaton state.
         one_hot_encoding = one_hot_encode(automaton_state,
@@ -174,8 +171,6 @@ class NonMarkovianTrainer(object):
                 # Episode using independent-act and agent.intial_internals()
                 internals = agent.initial_internals()
                 states = environment.reset()
-                print(environment)
-                print(states)
                 # automaton_state = states['gymtpl1'][0]
                 states = self.pack_states(states)
                 prevAutState = 0
@@ -224,7 +219,7 @@ class NonMarkovianTrainer(object):
                     # else:
                     #     self.make_experience(automaton_state, agent, prev_states, environment, episode)
                 
-                
+                print('Episode {}: {}'.format(episode, ep_reward))                
 
                 if self.synthetic:
                     # Record synthetic episode experience
@@ -239,12 +234,9 @@ class NonMarkovianTrainer(object):
                     synthetic_internals = agent.initial_internals()
                     synthetic_environment = environment.get_synthetic_env()
                     states = synthetic_environment.reset()
-                    print(synthetic_environment)
-                    # states[1] = [states[1]]
-                    print(states)
 
                     # automaton_state = states['gymtpl1'][0]
-                    states = self.pack_states(states, synthetic_case=True)
+                    states = self.pack_states(states)
                     prevAutState = 0
                     # Save the reward that you reach in the episode inside a linked list. 
                     # This will be used for nice plots in the report.
@@ -285,7 +277,7 @@ class NonMarkovianTrainer(object):
                         if terminal:
                             states = synthetic_environment.reset()
 
-                print('Episode {}: {}'.format(episode, ep_reward))
+                print('Synthetic Episode {}: {}'.format(episode, ep_reward))
 
                 if self.act_pattern == 'act-experience-update':
                     # Feed recorded experience to agent
