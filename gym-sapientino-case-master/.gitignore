@@ -1,0 +1,22 @@
+# Project
+/outputs/
+
+# Development
+.python-version
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Packaging
+/build/
+/dist/
+/.tox/
+
+# Vim
+.*.sw[po]
+/Session.vim
+/tags
+*~
+[._]*.un~
