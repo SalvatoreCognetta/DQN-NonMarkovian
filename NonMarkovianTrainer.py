@@ -255,8 +255,8 @@ class NonMarkovianTrainer(object):
 
                         # act-experience-update
                         synthetic_episode_states.append(states)
-                        synthetic_episode_internals.append(internals)
-                        actions, synthetic_internals = agent.act(states=states, internals=internals, independent=True)
+                        synthetic_episode_internals.append(synthetic_internals)
+                        actions, synthetic_internals = agent.act(states=states, internals=synthetic_internals, independent=True)
                         # act-experience-update
                         synthetic_episode_actions.append(actions)
                         
