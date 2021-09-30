@@ -4,6 +4,3 @@
 [submodule "RA_project"]
 	path = RA_project
 	url = https://github.com/francycar/RA_project
-[submodule "gym-sapientino-case"]
-	path = gym-sapientino-case
-	url = https://github.com/cipollone/gym-sapientino-case
