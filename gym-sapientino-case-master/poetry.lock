@@ -722,7 +722,7 @@ pythomata = "0.3.2"
 
 [package.source]
 type = "git"
-url = "git@github.com:SalvatoreCognetta/temprl.git"
+url = "https://github.com/SalvatoreCognetta/temprl.git"
 reference = "develop"
 
 [[package]]
