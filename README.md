@@ -30,9 +30,13 @@ For both DQN and DDPG, the counterfactual experiences would simply be added to t
 CRM also converges to optimal policies when combined with q-learning and this is a theorem in Icarte et al., 2020:  
 **Theorem** Given an MDPRM (Markov Decision Process with Reward Machine), CRM with tabular q-learning converges to an optimal policy for the problem in the limit (as long as every state-action pair is visited infinitely often).
 
-
 ## Gym SapientinoCase
-Lorem ipsum
+In Gym SapientinoCase we have a planar unicycle robot that can move inside  a 2-D environment, which is basically a rectangular map with some coloured cells. The goal of the agent-robot is to visit the coloured cells of a continuous state space in a specific order. SapientinoCase has a low–dimensional observation space, which allows to use simple Feed–Forward Neural Networks. 
+
+![Sapientino Environment](report/images/sapientino.png)
+
+<!-- TODO: finish with some examples -->
+
 # Setup the project
 
 ## Clone the repository
