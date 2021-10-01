@@ -7,7 +7,7 @@ authors = ["Roberto Cipollone <cipollone.rt@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.7"
 gym-sapientino = { git = "https://github.com/whitemech/gym-sapientino.git", branch = "data-workaround" }
-temprl = { git = "git@github.com:SalvatoreCognetta/temprl.git", branch = "develop" }
+temprl = { git = "https://github.com/SalvatoreCognetta/temprl.git", branch = "develop" }
 logaut = "^0.1.1"
 
 [tool.poetry.dev-dependencies]

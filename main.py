@@ -73,7 +73,7 @@ if __name__ == '__main__':
     # Set this value here to the maximum timestep value.
     MAX_EPISODE_TIMESTEPS = args.max_timesteps
     # There are both the initial and the sink additional states.
-    NUM_STATES_AUTOMATON = num_colors+2
+    NUM_STATES_AUTOMATON = num_colors+1
 
 
     # Extract the map from the command line arguments
@@ -150,7 +150,7 @@ if __name__ == '__main__':
 
     AUTOMATON_STATE_ENCODING_SIZE = HIDDEN_STATE_SIZE*NUM_STATES_AUTOMATON
 
-    discount_factor = 0.9
+    discount_factor = 0.99
 
     agent = build_agent(agent = 'dqn', batch_size = batch_size,
                         memory =memory,

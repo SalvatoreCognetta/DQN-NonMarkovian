@@ -4,6 +4,7 @@ from tensorforce.agents import Agent
 from gym_sapientino_case.env import SapientinoCase
 from copy import deepcopy
 import numpy as np
+from collections import namedtuple
 
 from utils import one_hot_encode
 
@@ -73,52 +74,6 @@ class NonMarkovianTrainer(object):
                 agent.observe(terminal=terminal, reward=reward)            
                 # experience.append([prev_states,prev_automaton_state,actions,reward,states,automaton_state])
 
-    def get_reward_automaton(self, automaton_state, prev_automaton_state, reward, terminal, episode) -> Tuple[float, bool]:
-        # Terminate the episode with a negative reward
-        # if the goal DFA reaches SINK state (failure).
-        if automaton_state == self.sink_id:
-            reward = -500.0
-            terminal = True
-            return reward, terminal
-
-        if self.num_colors == 2:
-            if automaton_state == 1 and prev_automaton_state == 0:
-                reward = 500.0
-
-            elif automaton_state == 3 and prev_automaton_state == 1:
-                reward = 500.0
-                print("Visited goal on episode: ", episode)
-                terminal = True
-
-        elif self.num_colors == 3:
-            if automaton_state == 1 and prev_automaton_state == 0:
-                reward = 500.0
-
-            elif automaton_state == 3 and prev_automaton_state == 1:
-                reward = 500.0
-
-            elif automaton_state == 4 and prev_automaton_state == 3:
-                reward = 500.0
-                print("Visited goal on episode: ", episode)
-                terminal = True
-
-        elif self.num_colors == 4:
-            if automaton_state == 1 and prev_automaton_state == 0:
-                reward = 500.0
-
-            elif automaton_state == 3 and prev_automaton_state == 1:
-                reward = 500.0
-
-            elif automaton_state == 4 and prev_automaton_state == 3:
-                reward = 500.0
-
-            elif automaton_state == 5 and prev_automaton_state == 4:
-                reward = 500.0
-                print("Visited goal on episode: ", episode)
-                terminal = True
-
-        return reward, terminal
-
     def pack_states(self,states) -> Dict[np.ndarray, np.ndarray]:
         """
             Desc: utility function that packs the state dictionary so that it can be passed as input to the
@@ -157,6 +112,7 @@ class NonMarkovianTrainer(object):
         cum_reward = 0.0
         agent = self.agent
         environment = self.environment
+        Transition = namedtuple('Transition', 's a r s_ i t')
         try:
             # Train for N episodes
             for episode in tqdm(range(episodes),desc='training',leave = True):
@@ -167,20 +123,23 @@ class NonMarkovianTrainer(object):
                 episode_terminal = list()
                 episode_reward = list()
 
+                transitions = list() # record the whole history
+
                 terminal = False
                 # Episode using independent-act and agent.intial_internals()
                 internals = agent.initial_internals()
                 states = environment.reset()
+                prev_states = tuple(states)
                 # automaton_state = states['gymtpl1'][0]
                 states = self.pack_states(states)
                 prevAutState = 0
                 # Save the reward that you reach in the episode inside a linked list. 
                 # This will be used for nice plots in the report.
                 ep_reward = 0.0
+                
                 while not terminal:
                     environment.render()
-                    prev_states = states.copy()
-
+                    
                     if self.act_pattern == 'act-observe':
                         actions = agent.act(states=states)
                     elif self.act_pattern == 'act-experience-update':
@@ -192,9 +151,10 @@ class NonMarkovianTrainer(object):
                         episode_actions.append(actions)
                     
                     states, reward, terminal, info = environment.step(actions)
-
+                    prev_prev_states = tuple(states)
                     # Extract gym sapientino state and the state of the automaton.
                     automaton_state = states[1][0]
+                    
                     states = self.pack_states(states)
                     # Reward shaping.
                     reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
@@ -210,7 +170,9 @@ class NonMarkovianTrainer(object):
                     prevAutState = int(automaton_state)
                     ep_reward += reward
                     cum_reward += reward
-                    
+
+                    transitions.append(Transition(prev_states,actions,reward,states,internals, terminal))
+                    prev_states = tuple(prev_prev_states)
                     if self.act_pattern == 'act-observe':
                         agent.observe(terminal=terminal, reward=reward)
   
@@ -222,6 +184,7 @@ class NonMarkovianTrainer(object):
                 print('Episode {}: {}'.format(episode, ep_reward))                
 
                 if self.synthetic:
+                    transitions.reverse() # reverse the order to use pop in position -1 (default) -> should not copy the entire list, done only once here
                     # Record synthetic episode experience
                     synthetic_episode_states = list()
                     synthetic_episode_internals = list()
@@ -241,28 +204,44 @@ class NonMarkovianTrainer(object):
                     # Save the reward that you reach in the episode inside a linked list. 
                     # This will be used for nice plots in the report.
                     ep_reward = 0.0
-                    while not terminal:
+                    while len(transitions):
                         # synthetic_environment.render()
-                        prev_states = states.copy()
-
-                        # act-experience-update
-                        synthetic_episode_states.append(states)
-                        synthetic_episode_internals.append(synthetic_internals)
-                        actions, synthetic_internals = agent.act(states=states, internals=synthetic_internals, independent=True)
-                        # act-experience-update
-                        synthetic_episode_actions.append(actions)
                         
-                        states, reward, terminal, info = synthetic_environment.step(actions)
-
-                        # Extract gym sapientino state and the state of the automaton.
+                        transition = transitions.pop()
+                        
+                        states = transition.s
+                        actions = transition.a
+                        synthetic_internals = transition.i
+                        
                         automaton_state = states[1][0]
                         states = self.pack_states(states)
-                        # Reward shaping.
-                        reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
-
                         # act-experience-update
-                        synthetic_episode_terminal.append(terminal)
-                        synthetic_episode_reward.append(reward)
+                        
+
+                        if len(transitions):
+                            for prevAutState in range(0,self.num_state_automaton-2):
+                                states_u = states.copy()
+                                states_u['gymtpl1'] = one_hot_encode(prevAutState,self.automaton_encoding_size,self.num_state_automaton)
+                                states_, reward, terminal, info = synthetic_environment.step(state=prevAutState,action=actions)
+
+                                # Extract gym sapientino state and the state of the automaton.
+                                automaton_state = states_[1][0]
+                                # states = self.pack_states(states)
+                                # Reward shaping.
+                                reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+                                synthetic_episode_states.append(states_u)
+                                synthetic_episode_internals.append(synthetic_internals)
+                                synthetic_episode_actions.append(actions)
+                                synthetic_episode_terminal.append(terminal)
+                                synthetic_episode_reward.append(reward)
+                        else:
+                            reward, terminal = transition.r, transition.t
+                            # act-experience-update
+                            synthetic_episode_states.append(states)
+                            synthetic_episode_internals.append(synthetic_internals)
+                            synthetic_episode_actions.append(actions)
+                            synthetic_episode_terminal.append(terminal)
+                            synthetic_episode_reward.append(reward)
                         
                         if reward != -0.1:
                             print("Synthetic automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
@@ -271,36 +250,36 @@ class NonMarkovianTrainer(object):
                         ep_reward += reward
                         cum_reward += reward
                         
-                        if self.act_pattern == 'act-observe':
-                            agent.observe(terminal=terminal, reward=reward)
+                        # if self.act_pattern == 'act-observe':
+                        #     agent.observe(terminal=terminal, reward=reward)
 
                         if terminal:
                             states = synthetic_environment.reset()
 
                 print('Synthetic Episode {}: {}'.format(episode, ep_reward))
 
-                if self.act_pattern == 'act-experience-update':
+                # if self.act_pattern == 'act-experience-update':
 
-                    if self.synthetic:
-                        episode_states.extend(synthetic_episode_states)
-                        episode_internals.extend(synthetic_episode_internals)
-                        episode_actions.extend(synthetic_episode_actions)
-                        episode_terminal.extend(synthetic_episode_terminal)
-                        episode_reward.extend(synthetic_episode_reward)
-                        # # Feed synthetic experience to agent
-                        # agent.experience(
-                        #     states=synthetic_episode_states, internals=synthetic_episode_internals, actions=synthetic_episode_actions,
-                        #     terminal=synthetic_episode_terminal, reward=synthetic_episode_reward
-                        # )
+                if self.synthetic:
+                    episode_states.extend(synthetic_episode_states)
+                    episode_internals.extend(synthetic_episode_internals)
+                    episode_actions.extend(synthetic_episode_actions)
+                    episode_terminal.extend(synthetic_episode_terminal)
+                    episode_reward.extend(synthetic_episode_reward)
+                    # # Feed synthetic experience to agent
+                    # agent.experience(
+                    #     states=synthetic_episode_states, internals=synthetic_episode_internals, actions=synthetic_episode_actions,
+                    #     terminal=synthetic_episode_terminal, reward=synthetic_episode_reward
+                    # )
 
-                    # Feed recorded experience to agent
-                    agent.experience(
-                        states=episode_states, internals=episode_internals, actions=episode_actions,
-                        terminal=episode_terminal, reward=episode_reward
-                    )
-                    # Perform update
-                    agent.update()
-                
+                # Feed recorded experience to agent
+                agent.experience(
+                    states=episode_states, internals=episode_internals, actions=episode_actions,
+                    terminal=episode_terminal, reward=episode_reward
+                )
+                # Perform update
+                agent.update()
+            
             # # EVALUATE for 100 episodes and VISUALIZE
             # sum_rewards = 0.0
             # for _ in range(100):

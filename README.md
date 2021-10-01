@@ -66,7 +66,7 @@ conda activate raenv
 
 Install tensorforce:  
 ```bash
-pip install tensorforce==0.6.5
+pip install tensorforce==0.6.4
 ```
 
 Install sapientino-case: 
@@ -106,7 +106,7 @@ In order to train the net:
 If you get an error like this:
 **TypeError: concatenate() got an unexpected keyword argument 'dtype'
 **
-The problem is the unsupported numpy version, upgrading would produce tensorflow and tensorforce incompatibility. Comment line 205 of the file:
+The problem is the unsupported numpy version, upgrading would produce tensorflow and tensorforce incompatibility. Comment line 215 of the file:
 ```bash
 nano $HOME/.conda/envs/raenv/lib/python3.8/site-packages/gym_sapientino/wrappers/observations.py
 ```
