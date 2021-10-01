@@ -112,7 +112,7 @@ nano $HOME/.conda/envs/raenv/lib/python3.8/site-packages/gym_sapientino/wrappers
 ## Clone temprl project for synthetic experience
 In order to modify the temprl repo (used by gym-sapientino-case), before the installation of this repo, clone temprl in another directory:  
 ```bash
-git clone git@github.com:SalvatoreCognetta/temprl.git 
+git clone https://github.com/SalvatoreCognetta/temprl.git 
 cd temprl
 git checkout develop
 ```
