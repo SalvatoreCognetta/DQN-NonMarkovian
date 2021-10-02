@@ -18,8 +18,8 @@ class NonMarkovianTrainer(object):
                 automaton_encoding_size: int,
                 sink_id: int, 
                 num_colors: int = 2,
-                act_pattern:str='act-experience-update',
-                synthetic_exp:bool=True
+                act_pattern:str='act-observe',
+                synthetic_exp:bool=False
                 ) -> None:
 
         """
@@ -52,27 +52,6 @@ class NonMarkovianTrainer(object):
         if DEBUG:
             print("\n################### Agent architecture ###################\n")
             print(self.agent.get_architecture())
-
-    def make_experience(self, curr_automaton_state, agent, states, environment, episode):
-        # experience = []
-        for prev_automaton_state in range(self.num_state_automaton):
-            if prev_automaton_state!=self.num_state_automaton-1 and prev_automaton_state !=curr_automaton_state:
-                states_ = states
-
-                states_['gymtpl1'][0] = prev_automaton_state
-                states_ = self.pack_states(tuple(states_.values()))
-                actions = agent.act(states=states_)
-                
-                # deepcopy avoid to increase env steps while iterating over automaton state
-                # to be substituted if exists a way to simulate env without increasing timestep and env state
-                states_, reward, terminal, info = environment.step(actions)
-    
-                #Extract gym sapientino state and the state of the automaton.
-                automaton_state = int(states_[1][0])
-                # Reward shaping.
-                reward, terminal = self.get_reward_automaton(automaton_state, prev_automaton_state,  reward, terminal, episode)
-                agent.observe(terminal=terminal, reward=reward)            
-                # experience.append([prev_states,prev_automaton_state,actions,reward,states,automaton_state])
 
     def pack_states(self,states) -> Dict[np.ndarray, np.ndarray]:
         """
@@ -153,7 +132,7 @@ class NonMarkovianTrainer(object):
                     states, reward, terminal, info = environment.step(actions)
                     prev_prev_states = tuple(states)
                     # Extract gym sapientino state and the state of the automaton.
-                    automaton_state = states[1][0]
+                    automaton_state = int(states[1][0])
                     
                     states = self.pack_states(states)
                     # Reward shaping.
@@ -164,7 +143,7 @@ class NonMarkovianTrainer(object):
                         episode_terminal.append(terminal)
                         episode_reward.append(reward)
                     
-                    if reward != -0.1:
+                    if reward > 0:
                         print("Automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
 
                     prevAutState = int(automaton_state)
@@ -178,9 +157,7 @@ class NonMarkovianTrainer(object):
   
                     if terminal:
                         states = environment.reset()
-                    # else:
-                    #     self.make_experience(automaton_state, agent, prev_states, environment, episode)
-                
+
                 print('Episode {}: {}'.format(episode, ep_reward))                
 
                 if self.synthetic:
@@ -243,8 +220,6 @@ class NonMarkovianTrainer(object):
                             synthetic_episode_terminal.append(terminal)
                             synthetic_episode_reward.append(reward)
                         
-                        # if reward != -0.1:
-                        #     print("Synthetic automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
 
                         prevAutState = int(automaton_state)
                         ep_reward += reward
@@ -346,7 +321,7 @@ class NonMarkovianTrainer(object):
 
         elif self.num_colors == 4:
             # Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
-            
+
             if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 

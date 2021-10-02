@@ -38,9 +38,9 @@ if __name__ == '__main__':
     # Handle command line arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--batch_size', type = int, default = 64,help= 'Experience batch size.')
+    parser.add_argument('--batch_size', type = int, default = 500,help= 'Experience batch size.')
     parser.add_argument('--memory', type = int, default = None,help= 'Memory buffer size. Used by agents that train with replay buffer.')
-    parser.add_argument('--multi_step',type = int, default = 10, help="Agent update optimization steps.")
+    parser.add_argument('--multi_step',type = int, default = 1, help="Agent update optimization steps.")
     parser.add_argument('--update_frequency', type = int, default = None, help="Frequency of the policy updates. Default equals to batch_size.")
     parser.add_argument('--num_colors', type = int, default = 2, help="Number of distinct colors in the map.")
     parser.add_argument('--learning_rate', type = float, default = 0.001, help="Learning rate for the optimization algorithm")
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     # Set this value here to the maximum timestep value.
     MAX_EPISODE_TIMESTEPS = args.max_timesteps
     # There are both the initial and the sink additional states.
-    NUM_STATES_AUTOMATON = num_colors+1
+    NUM_STATES_AUTOMATON = num_colors+2
 
 
     # Extract the map from the command line arguments
@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
     # Default dqn memory.
     if not memory:
-        memory = 20000 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
+        memory = 32500 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
 
     # Choose whether or not to visualize the environment
     VISUALIZE = True
