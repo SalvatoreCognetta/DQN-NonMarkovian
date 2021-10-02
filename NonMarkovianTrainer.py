@@ -243,8 +243,8 @@ class NonMarkovianTrainer(object):
                             synthetic_episode_terminal.append(terminal)
                             synthetic_episode_reward.append(reward)
                         
-                        if reward != -0.1:
-                            print("Synthetic automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
+                        # if reward != -0.1:
+                        #     print("Synthetic automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
 
                         prevAutState = int(automaton_state)
                         ep_reward += reward
@@ -261,11 +261,11 @@ class NonMarkovianTrainer(object):
                 if self.act_pattern == 'act-experience-update':
 
                     if self.synthetic:
-                        episode_states = merge_lists(episode_states, synthetic_episode_states)
-                        episode_internals = merge_lists(episode_internals, synthetic_episode_internals)
+                        episode_states  = merge_lists(episode_states, synthetic_episode_states)
                         episode_actions = merge_lists(episode_actions, synthetic_episode_actions)
-                        episode_terminal = merge_lists(episode_terminal, synthetic_episode_terminal)
-                        episode_reward = merge_lists(episode_reward, synthetic_episode_reward)
+                        episode_reward  = merge_lists(episode_reward, synthetic_episode_reward)
+                        episode_internals   = merge_lists(episode_internals, synthetic_episode_internals)
+                        episode_terminal    = merge_lists(episode_terminal, synthetic_episode_terminal)
                         # episode_states.extend(synthetic_episode_states)
                         # episode_internals.extend(synthetic_episode_internals)
                         # episode_actions.extend(synthetic_episode_actions)
@@ -317,7 +317,13 @@ class NonMarkovianTrainer(object):
            pass
 
     def get_reward(self, automaton_state, prev_automaton_state, reward, terminal, episode) -> Tuple[float, bool]:
-        if self.num_colors == 2:
+        if self.num_colors == 1:
+            if automaton_state == 1 and prev_automaton_state == 0:
+                reward = 500.0
+                print("Visited goal on episode: ", episode)
+                terminal = True
+                
+        elif self.num_colors == 2:
             if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 

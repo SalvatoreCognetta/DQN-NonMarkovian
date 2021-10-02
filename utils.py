@@ -41,11 +41,13 @@ def merge_lists(l1:List, l2:List) -> List:
     else:
         return [item for t in zip(l1,l2) for item in t]
 
-def ncolor_to_map(num_colors:int) -> List[str]:
-    if num_colors == 2:
+def color_sequence(num_colors:int) -> List[str]:
+    if num_colors == 1:
+        return ['blue']
+    elif num_colors == 2:
         return ['blue','green']
     elif num_colors == 3:
-        return  ['blue','red','green']
+        return ['blue','red','green']
     elif num_colors == 4:
         return ['blue','red','yellow','green']
     else:

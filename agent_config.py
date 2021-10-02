@@ -4,7 +4,7 @@ from tensorforce.agents import Agent
 
 def build_agent(agent, batch_size,environment,num_states_automaton,
 				hidden_layer_size,automaton_state_encoding_size,discount_factor,
-				memory= 20000,#'minimum',
+				memory = 20000,#'minimum',
 				update_frequency = 20,multi_step = 10,exploration = 0.0, learning_rate = 0.001,
                 non_markovian = True, entropy_regularization = 0.0, saver = None) ->  Agent:
 
@@ -111,7 +111,7 @@ def build_agent(agent, batch_size,environment,num_states_automaton,
 			learning_rate = learning_rate,
 			exploration = exploration,
 
-			saver=dict(directory='model'),
+			saver=saver,
 			summarizer=dict(directory='summaries',summaries=['reward','graph']),
 		)
 

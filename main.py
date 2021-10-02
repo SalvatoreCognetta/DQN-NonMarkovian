@@ -18,7 +18,7 @@ from gym_sapientino.core.configurations import (
     SapientinoConfiguration,
 )
 
-from utils import colors2reward_ldlf, ncolor_to_map
+from utils import colors2reward_ldlf, color_sequence
 from agent_config import  build_agent
 from NonMarkovianTrainer import NonMarkovianTrainer
 
@@ -26,7 +26,7 @@ from argparse import ArgumentParser
 
 
 # Constants
-MIN_NUM_COLORS = 2
+MIN_NUM_COLORS = 1
 MAX_NUM_COLORS = 5
 NUM_COLORS_LIST = [i for i in range(MIN_NUM_COLORS, MAX_NUM_COLORS)]
 
@@ -53,9 +53,9 @@ if __name__ == '__main__':
     parser.add_argument("--sequence", nargs="+", default=None, help="Goal sequence for the training specified as a list of strings.")
     parser.add_argument("--act_pattern", type = str, default='act-observe', help="Select the action pattern, possible values: act-observe, act-experience-update.")
     parser.add_argument("--synthetic", type = bool, default=False, help="Generate synthetic episodes.")
+    parser.add_argument("--save_path", type = str, default=None, help="Path where are saved the agent weights.")
 
     args = parser.parse_args()
-
     # Collect some information from the argument parser.
     batch_size 	= args.batch_size
     memory 		= args.memory
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     exploration 	 = args.exploration
     act_pattern 	 = args.act_pattern
     synthetic 	 	 = args.synthetic
-    print(synthetic)
+    save_path 	     = args.save_path
     
     NUM_EXPERTS = num_colors
     EPISODES    = args.episodes
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     # Extract the goal sequence form the command line arguments
     if not args.sequence:
         if num_colors in NUM_COLORS_LIST:
-            colors = ncolor_to_map(num_colors)
+            colors = color_sequence(num_colors)
         else:
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
@@ -155,6 +155,12 @@ if __name__ == '__main__':
 
     discount_factor = 0.99
 
+    if save_path is None:
+        save_path = 'models/' + str(num_colors) + 'color_' + act_pattern
+        save_path += '_synthetic' if synthetic else ''
+
+    saver = dict(directory=save_path)
+
     agent = build_agent(agent='dqn', batch_size=batch_size,
                         memory=memory,
                         update_frequency=update_frequency,
@@ -166,6 +172,7 @@ if __name__ == '__main__':
                         hidden_layer_size=HIDDEN_STATE_SIZE,
                         exploration=exploration,
                         entropy_regularization=entropy_bonus,
+                        saver=saver
                     )
 
 
