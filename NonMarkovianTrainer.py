@@ -5,9 +5,9 @@ from gym_sapientino_case.env import SapientinoCase
 from copy import deepcopy
 import numpy as np
 from collections import namedtuple
-
+from gym.wrappers.monitoring import video_recorder
 from utils import merge_lists, one_hot_encode
-
+from os.path import join
 DEBUG = False
 
 class NonMarkovianTrainer(object):
@@ -19,7 +19,8 @@ class NonMarkovianTrainer(object):
                 sink_id: int, 
                 num_colors: int = 2,
                 act_pattern:str='act-observe',
-                synthetic_exp:bool=False
+                synthetic_exp:bool=False,
+                save_path:str='',
                 ) -> None:
 
         """
@@ -45,6 +46,7 @@ class NonMarkovianTrainer(object):
         self.num_colors = num_colors
         self.act_pattern = act_pattern
         self.synthetic = synthetic_exp
+        self.save_path = save_path
 
         assert act_pattern in ['act-observe', 'act-experience-update']
         assert not synthetic_exp or (synthetic_exp and act_pattern == 'act-experience-update')
@@ -255,35 +257,39 @@ class NonMarkovianTrainer(object):
                     # Perform update
                     agent.update()
             
-            # # EVALUATE for 100 episodes and VISUALIZE
-            # sum_rewards = 0.0
-            # for _ in range(100):
-            #     states = environment.reset()
-            #     prevAutState = 0
-            #     states = self.pack_states(states)
-            #     environment.visualize = True
-            #     internals = agent.initial_internals()
-            #     terminal = False
-            #     while not terminal:
-            #         actions, internals = agent.act(
-            #             states=states, internals=internals, independent=True, deterministic=True
-            #         )
-            #         states, terminal, reward = environment.execute(actions=actions)
-            #         automaton_state = states['gymtpl1'][0]
-            #         states = self.pack_states(states)
-            #         # Reward shaping.
-            #         # reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
-            #         prevAutState = automaton_state
-            #         sum_rewards += reward
-            # environment.visualize = False
-            # print('Mean evaluation return:', sum_rewards / 100.0)
+            # EVALUATE for 100 episodes and VISUALIZE
+            sum_rewards = 0.0
+            vid = video_recorder.VideoRecorder(environment,path=join(self.save_path,"video.mp4"))
+            for _ in range(100):
+                states = environment.reset()
+                prevAutState = 0
+                states = self.pack_states(states)
+
+                internals = agent.initial_internals()
+                terminal = False
+                while not terminal:
+                    environment.render()
+                    vid.capture_frame()
+                    actions, internals = agent.act(
+                        states=states, internals=internals, independent=True, deterministic=True
+                    )
+                    states, reward, terminal, info = environment.step(action=actions)
+                    automaton_state = states[1][0]
+                    states = self.pack_states(states)
+                    # Reward shaping.
+                    reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+                    prevAutState = automaton_state
+                    sum_rewards += reward
+
+            print('Mean evaluation return:', sum_rewards / 100.0)
 
                 
 
-
+            vid.close()
             # Close both the agent and the environment.
             agent.close()
             environment.close()
+            
 
             return dict(cumulative_reward_nodiscount = cum_reward,
                         average_reward_nodiscount = cum_reward/episodes)

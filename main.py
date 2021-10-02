@@ -189,7 +189,8 @@ if __name__ == '__main__':
     trainer = NonMarkovianTrainer(agent, environment, NUM_STATES_AUTOMATON, 
                                   AUTOMATON_STATE_ENCODING_SIZE,
                                   SINK_ID, num_colors=num_colors,
-                                  act_pattern=act_pattern, synthetic_exp=synthetic
+                                  act_pattern=act_pattern, synthetic_exp=synthetic,
+                                  save_path=save_path
                                 )
 
     # Train the agent
