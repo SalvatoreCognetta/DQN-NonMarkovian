@@ -8,6 +8,7 @@ from collections import namedtuple
 from gym.wrappers.monitoring import video_recorder
 from utils import merge_lists, one_hot_encode
 from os.path import join
+import os
 DEBUG = False
 
 class NonMarkovianTrainer(object):
@@ -195,7 +196,6 @@ class NonMarkovianTrainer(object):
                         automaton_state = states[1][0]
                         states = self.pack_states(states)
                         # act-experience-update
-                        
 
                         if len(transitions):
                             for prevAutState in range(0,self.num_state_automaton-2):
@@ -225,10 +225,6 @@ class NonMarkovianTrainer(object):
 
                         prevAutState = int(automaton_state)
                         ep_reward += reward
-                        cum_reward += reward
-                        
-                        # if self.act_pattern == 'act-observe':
-                        #     agent.observe(terminal=terminal, reward=reward)
 
                         if terminal:
                             states = synthetic_environment.reset()
@@ -259,8 +255,11 @@ class NonMarkovianTrainer(object):
             
             # EVALUATE for 100 episodes and VISUALIZE
             sum_rewards = 0.0
+            max_reward  = 0.0
             vid = video_recorder.VideoRecorder(environment,path=join(self.save_path,"video.mp4"))
-            for _ in range(100):
+            temp_mp4 = join(self.save_path,"video_temp.mp4")
+            temp_meta_json = join(self.save_path,"video_temp.meta.json")
+            for _ in tqdm(range(100), desc='evaluate'):
                 states = environment.reset()
                 prevAutState = 0
                 states = self.pack_states(states)
@@ -281,11 +280,23 @@ class NonMarkovianTrainer(object):
                     prevAutState = automaton_state
                     sum_rewards += reward
 
+                if sum_rewards > max_reward:
+                    # Change the filename from video_temp.mp4 to video.mp4
+                    vid.path = join(self.save_path,"video.mp4")
+                    # Save to local disk only if best reward
+                    vid.close()
+                    # Create a new temp vid to catch next episode that could have higher reward
+                    vid = video_recorder.VideoRecorder(environment,path=temp_mp4)
+                else:
+                    # If the episode doesn't have higher score, generate a new temp VideoRecorder that overwrite the older file
+                    del vid
+                    vid = video_recorder.VideoRecorder(environment,path=temp_mp4)
+
             print('Mean evaluation return:', sum_rewards / 100.0)
 
-                
-
-            vid.close()
+            # Remove the temp files
+            os.remove(temp_mp4)
+            os.remove(temp_meta_json)
             # Close both the agent and the environment.
             agent.close()
             environment.close()
@@ -326,8 +337,6 @@ class NonMarkovianTrainer(object):
                 terminal = True
 
         elif self.num_colors == 4:
-            # Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
-
             if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 
