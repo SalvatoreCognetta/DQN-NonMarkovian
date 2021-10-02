@@ -82,11 +82,13 @@ if __name__ == '__main__':
     # Extract the map from the command line arguments
     if not args.path:
         if num_colors in NUM_COLORS_LIST:
-            map_path = 'maps/map' + str(num_colors) + '_easy.txt'
+            map_name = 'map' + str(num_colors) + '_easy'
+            map_path = 'maps/' + map_name + '.txt'
             map_file = os.path.join('.', map_path)
         else:
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
+        map_name = args.path.split('/')[1].split('.txt')[0]
         map_file = args.path
     
     # Read the txt map file
@@ -156,7 +158,7 @@ if __name__ == '__main__':
     discount_factor = 0.99
 
     if save_path is None:
-        save_path = 'models/' + str(num_colors) + 'color_' + act_pattern
+        save_path = 'models/' + map_name+ '_' + act_pattern
         save_path += '_synthetic' if synthetic else ''
 
     saver = dict(directory=save_path)
