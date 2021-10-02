@@ -18,7 +18,7 @@ from gym_sapientino.core.configurations import (
     SapientinoConfiguration,
 )
 
-from utils import colors2reward_ldlf
+from utils import colors2reward_ldlf, ncolor_to_map
 from agent_config import  build_agent
 from NonMarkovianTrainer import NonMarkovianTrainer
 
@@ -29,8 +29,6 @@ from argparse import ArgumentParser
 MIN_NUM_COLORS = 2
 MAX_NUM_COLORS = 5
 NUM_COLORS_LIST = [i for i in range(MIN_NUM_COLORS, MAX_NUM_COLORS)]
-COLORS_LIST = ['blue','red','yellow','green']
-assert len(COLORS_LIST)+1 == MAX_NUM_COLORS
 
 SINK_ID = 2
 DEBUG = False
@@ -69,6 +67,7 @@ if __name__ == '__main__':
     exploration 	 = args.exploration
     act_pattern 	 = args.act_pattern
     synthetic 	 	 = args.synthetic
+    print(synthetic)
     
     NUM_EXPERTS = num_colors
     EPISODES    = args.episodes
@@ -99,7 +98,7 @@ if __name__ == '__main__':
     # Extract the goal sequence form the command line arguments
     if not args.sequence:
         if num_colors in NUM_COLORS_LIST:
-            colors = COLORS_LIST[0:num_colors]
+            colors = ncolor_to_map(num_colors)
         else:
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
@@ -167,7 +166,7 @@ if __name__ == '__main__':
                         hidden_layer_size=HIDDEN_STATE_SIZE,
                         exploration=exploration,
                         entropy_regularization=entropy_bonus,
-					)
+                    )
 
 
     # Debugging prints
@@ -181,8 +180,8 @@ if __name__ == '__main__':
     trainer = NonMarkovianTrainer(agent, environment, NUM_STATES_AUTOMATON, 
                                   AUTOMATON_STATE_ENCODING_SIZE,
                                   SINK_ID, num_colors=num_colors,
-								  act_pattern=act_pattern, synthetic_exp=synthetic
-								)
+                                  act_pattern=act_pattern, synthetic_exp=synthetic
+                                )
 
     # Train the agent
     training_results = trainer.train(episodes=EPISODES)
