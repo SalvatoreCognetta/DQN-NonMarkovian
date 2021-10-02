@@ -18,7 +18,7 @@ from gym_sapientino.core.configurations import (
     SapientinoConfiguration,
 )
 
-from utils import colors2reward_ldlf
+from utils import colors2reward_ldlf, color_sequence
 from agent_config import  build_agent
 from NonMarkovianTrainer import NonMarkovianTrainer
 
@@ -26,11 +26,9 @@ from argparse import ArgumentParser
 import build_dqn
 
 # Constants
-MIN_NUM_COLORS = 2
+MIN_NUM_COLORS = 1
 MAX_NUM_COLORS = 5
 NUM_COLORS_LIST = [i for i in range(MIN_NUM_COLORS, MAX_NUM_COLORS)]
-COLORS_LIST = ['blue','red','yellow','green']
-assert len(COLORS_LIST)+1 == MAX_NUM_COLORS
 
 SINK_ID = 2
 DEBUG = False
@@ -53,9 +51,11 @@ if __name__ == '__main__':
     parser.add_argument('--episodes', type = int, default = 1000, help = "Number of training episodes.")
     parser.add_argument('--path', type = str, default = None, help = "Path to the map file inside the file system.")
     parser.add_argument("--sequence", nargs="+", default=None, help="Goal sequence for the training specified as a list of strings.")
+    parser.add_argument("--act_pattern", type = str, default='act-observe', help="Select the action pattern, possible values: act-observe, act-experience-update.")
+    parser.add_argument("--synthetic", type = bool, default=False, help="Generate synthetic episodes.")
+    parser.add_argument("--save_path", type = str, default=None, help="Path where are saved the agent weights.")
 
     args = parser.parse_args()
-
     # Collect some information from the argument parser.
     batch_size 	= args.batch_size
     memory 		= args.memory
@@ -65,6 +65,9 @@ if __name__ == '__main__':
     learning_rate 	 = args.learning_rate
     entropy_bonus 	 = args.entropy_bonus
     exploration 	 = args.exploration
+    act_pattern 	 = args.act_pattern
+    synthetic 	 	 = args.synthetic
+    save_path 	     = args.save_path
     
     NUM_EXPERTS = num_colors
     EPISODES    = args.episodes
@@ -79,11 +82,13 @@ if __name__ == '__main__':
     # Extract the map from the command line arguments
     if not args.path:
         if num_colors in NUM_COLORS_LIST:
-            map_path = 'maps/map' + str(num_colors) + '_easy.txt'
+            map_name = 'map' + str(num_colors) + '_easy'
+            map_path = 'maps/' + map_name + '.txt'
             map_file = os.path.join('.', map_path)
         else:
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
+        map_name = args.path.split('/')[1].split('.txt')[0]
         map_file = args.path
     
     # Read the txt map file
@@ -94,12 +99,8 @@ if __name__ == '__main__':
 
     #Extract the goal sequence form the command line arguments
     if not args.sequence:
-        if num_colors == 2:
-            colors = ['blue','green']
-        elif num_colors == 3:
-            colors = ['blue','red','green']
-        elif num_colors == 4:
-            colors = ['blue','red','yellow','green']
+        if num_colors in NUM_COLORS_LIST:
+            colors = color_sequence(num_colors)
         else:
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
@@ -160,18 +161,25 @@ if __name__ == '__main__':
 
     discount_factor = 0.99
 
-    agent = build_agent(agent = 'dqn', batch_size = batch_size,
-                        memory =memory,
+    if save_path is None:
+        save_path = 'models/' + map_name+ '_' + act_pattern
+        save_path += '_synthetic' if synthetic else ''
+
+    saver = dict(directory=save_path)
+
+    agent = build_agent(agent='dqn', batch_size=batch_size,
+                        memory=memory,
                         update_frequency=update_frequency,
-                        discount_factor = discount_factor,
+                        discount_factor=discount_factor,
                         learning_rate=learning_rate,
-                        environment = environment,
-                        num_states_automaton =NUM_STATES_AUTOMATON,
+                        environment=environment,
+                        num_states_automaton=NUM_STATES_AUTOMATON,
                         automaton_state_encoding_size=AUTOMATON_STATE_ENCODING_SIZE,
                         hidden_layer_size=HIDDEN_STATE_SIZE,
-                        exploration =exploration,
+                        exploration=exploration,
                         entropy_regularization=entropy_bonus,
-                        )
+                        saver=saver
+                    )
 
     
 
@@ -183,10 +191,11 @@ if __name__ == '__main__':
     print(colors)
 
     # Create the trainer
-    trainer = NonMarkovianTrainer(agent,environment,NUM_STATES_AUTOMATON, 
+    trainer = NonMarkovianTrainer(agent, environment, NUM_STATES_AUTOMATON, 
                                   AUTOMATON_STATE_ENCODING_SIZE,
-                                  SINK_ID,num_colors=num_colors
-                                  )
+                                  SINK_ID, num_colors=num_colors,
+                                  act_pattern=act_pattern, synthetic_exp=synthetic
+                                )
 
     # Train the agent
     training_results = trainer.train(episodes=EPISODES)

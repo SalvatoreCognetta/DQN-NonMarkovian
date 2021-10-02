@@ -127,8 +127,19 @@ For the code look at the [GitHub repository](https://github.com/SalvatoreCognett
 Changes are done in `TemporalGoalWrapper` class inside temprl/wrapper.py.  
 After a modification on the temprl forked project:
 1. push the modifications;
-2. remove the directories of temprl inside conda env via: `rm -rvf /home/NAME_TO_CHAGE/anaconda3/envs/raenv/lib/python3.8/site-packages/temprl*` (bug of poetry: [virtual env not updates]([https://link](https://github.com/python-poetry/poetry/issues/2921) ))
-3. reinstall gym-sapientino via `cd gym-sapientino-case-master && pip install .`
+2. remove the directories of temprl inside conda env via: 
+	```bash 
+	RAENV_PATH=$(find $HOME -type d -name "raenv")
+	# Be aware the path should be only one in the form:
+	# /home/USER/anaconda3/envs/raenv
+	echo $RAENV_PATH # check if the path is correct
+	rm -rvf $RAENV_PATH/lib/python3.8/site-packages/temprl*
+	``` 
+	(bug of poetry: [virtual env doesn't updates]([https://link](https://github.com/python-poetry/poetry/issues/2921) ))
+3. reinstall gym-sapientino via: 
+   ```bash
+   cd gym-sapientino-case-master && pip install .
+   ```
 
 ---
 ## References
