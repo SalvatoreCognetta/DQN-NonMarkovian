@@ -53,6 +53,8 @@ if __name__ == '__main__':
     parser.add_argument('--episodes', type = int, default = 1000, help = "Number of training episodes.")
     parser.add_argument('--path', type = str, default = None, help = "Path to the map file inside the file system.")
     parser.add_argument("--sequence", nargs="+", default=None, help="Goal sequence for the training specified as a list of strings.")
+    parser.add_argument("--act_pattern", type = str, default='act-observe', help="Select the action pattern, possible values: act-observe, act-experience-update.")
+    parser.add_argument("--synthetic", type = bool, default=False, help="Generate synthetic episodes.")
 
     args = parser.parse_args()
 
@@ -65,6 +67,8 @@ if __name__ == '__main__':
     learning_rate 	 = args.learning_rate
     entropy_bonus 	 = args.entropy_bonus
     exploration 	 = args.exploration
+    act_pattern 	 = args.act_pattern
+    synthetic 	 	 = args.synthetic
     
     NUM_EXPERTS = num_colors
     EPISODES    = args.episodes
@@ -152,18 +156,18 @@ if __name__ == '__main__':
 
     discount_factor = 0.99
 
-    agent = build_agent(agent = 'dqn', batch_size = batch_size,
-                        memory =memory,
+    agent = build_agent(agent='dqn', batch_size=batch_size,
+                        memory=memory,
                         update_frequency=update_frequency,
-                        discount_factor = discount_factor,
+                        discount_factor=discount_factor,
                         learning_rate=learning_rate,
-                        environment = environment,
-                        num_states_automaton =NUM_STATES_AUTOMATON,
+                        environment=environment,
+                        num_states_automaton=NUM_STATES_AUTOMATON,
                         automaton_state_encoding_size=AUTOMATON_STATE_ENCODING_SIZE,
                         hidden_layer_size=HIDDEN_STATE_SIZE,
-                        exploration =exploration,
+                        exploration=exploration,
                         entropy_regularization=entropy_bonus,
-                        )
+					)
 
 
     # Debugging prints
@@ -174,10 +178,11 @@ if __name__ == '__main__':
     print(colors)
 
     # Create the trainer
-    trainer = NonMarkovianTrainer(agent,environment,NUM_STATES_AUTOMATON, 
+    trainer = NonMarkovianTrainer(agent, environment, NUM_STATES_AUTOMATON, 
                                   AUTOMATON_STATE_ENCODING_SIZE,
-                                  SINK_ID,num_colors=num_colors
-                                  )
+                                  SINK_ID, num_colors=num_colors,
+								  act_pattern=act_pattern, synthetic_exp=synthetic
+								)
 
     # Train the agent
     training_results = trainer.train(episodes=EPISODES)
