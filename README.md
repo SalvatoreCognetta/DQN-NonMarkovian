@@ -60,24 +60,17 @@ sudo bash conda_setup.sh
 ```
 
 ## Create conda virtual environment and install packages
-### Create the env 
-Create the virtual environment with python and pytorch (cpu) installed:  
+### Create and install the env 
+Create the virtual environment with python and pytorch (cpu) installed and install its packages:  
+
 ```bash
+# Create the environment
 conda create -y --name raenv python=3.8.5
-```
-
-Activate the environment:  
-```bash
+# Activate the environment
 conda activate raenv
-```
-
-Install tensorforce:  
-```bash
+# Install tensorforce
 pip install tensorforce==0.6.4
-```
-
-Install sapientino-case: 
-```bash
+# Install sapientino-case:
 cd gym-sapientino-case-master && pip install .
 ```
 
