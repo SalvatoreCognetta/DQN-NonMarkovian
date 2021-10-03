@@ -43,7 +43,7 @@ First we have a one color setting with **synthetic experience**:
 
 Then, different configurations with multiple colors are shown:  
 
-<img src="./models/map2_hard_act-observe/video.gif"  height="250"/>
+![](./models/map2_hard_act-observe/video.gif)
 
 ![](./models/map4_easy_act-observe/video.gif)
 
