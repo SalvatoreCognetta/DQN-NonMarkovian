@@ -40,7 +40,9 @@ In the video below are shown some examples of the environment. First we have a o
 
 
 
-Then, different configurations with multiple colors are shown:
+Then, different configurations with multiple colors are shown:  
+
+<img src="./models/map2_hard_act-observe/video.gif"  height="250"/>
 
 ![](./models/map4_easy_act-observe/video.gif)
 
