@@ -23,7 +23,7 @@ from agent_config import  build_agent
 from NonMarkovianTrainer import NonMarkovianTrainer
 
 from argparse import ArgumentParser
-
+import build_dqn
 
 # Constants
 MIN_NUM_COLORS = 1
@@ -38,8 +38,14 @@ if __name__ == '__main__':
     # Handle command line arguments
     parser = argparse.ArgumentParser()
 
+<<<<<<< HEAD
+    parser.add_argument('--batch_size', type = int, default = 500,help= 'Experience batch size.')
+    parser.add_argument('--memory', type = int, default = None,help= 'Memory buffer size. Used by agents that train with replay buffer.')
+    parser.add_argument('--multi_step',type = int, default = 1, help="Agent update optimization steps.")
+=======
     parser.add_argument('--batch_size', type = int, default = 500, help= 'Experience batch size.')
     parser.add_argument('--memory', type = int, default = None, help= 'Memory buffer size. Used by agents that train with replay buffer.')
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
     parser.add_argument('--update_frequency', type = int, default = None, help="Frequency of the policy updates. Default equals to batch_size.")
     parser.add_argument('--num_colors', type = int, default = 2, help="Number of distinct colors in the map.")
     parser.add_argument('--learning_rate', type = float, default = 0.001, help="Learning rate for the optimization algorithm")
@@ -95,7 +101,7 @@ if __name__ == '__main__':
     # Show in command line
     print(map)
 
-    # Extract the goal sequence form the command line arguments
+    #Extract the goal sequence form the command line arguments
     if not args.sequence:
         if num_colors in NUM_COLORS_LIST:
             colors = color_sequence(num_colors)
@@ -103,6 +109,7 @@ if __name__ == '__main__':
             raise AttributeError('Map with ', num_colors,' colors not supported by default. Specify a path for a map file.')
     else:
         colors = args.sequence
+
 
     # Convert colors in Linear Dynamic Logic 
     reward_ldlf = colors2reward_ldlf(colors) 
@@ -136,6 +143,7 @@ if __name__ == '__main__':
         logdir=log_dir,
     )
 
+    
     # Default tensorforce update frequency is batch size.
     if not update_frequency:
         update_frequency = batch_size
@@ -143,13 +151,18 @@ if __name__ == '__main__':
     # Default dqn memory.
     if not memory:
         memory = 32500 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
 
     # Choose whether or not to visualize the environment
     VISUALIZE = True
 
     # Limit the length of the episode of gym sapientino.
     environment = TimeLimit(environment, MAX_EPISODE_TIMESTEPS)
-    environment.env_synthetic = TimeLimit(environment.env_synthetic, MAX_EPISODE_TIMESTEPS)
+    # environment.env_synthetic = TimeLimit(environment.env_synthetic, MAX_EPISODE_TIMESTEPS)
+    # environment = Environment.create(environment =environment,max_episode_timesteps=MAX_EPISODE_TIMESTEPS,visualize =VISUALIZE)
 
     AUTOMATON_STATE_ENCODING_SIZE = HIDDEN_STATE_SIZE*NUM_STATES_AUTOMATON
 
@@ -175,6 +188,7 @@ if __name__ == '__main__':
                         saver=saver
                     )
 
+    
 
     # Debugging prints
     print("Istantiated an agent for training with parameters: ")
