@@ -36,16 +36,14 @@ In Gym SapientinoCase we have a planar unicycle robot that can move inside  a 2-
 ![Sapientino Environment](report/images/sapientino.png)
 
 ## Experiments
-In the gif below are shown some examples of the environment. First we have a one color setting: 
+In the video below are shown some examples of the environment. First we have a one color setting: 
 
-![](./models/map1_easy_act-observe/video.mp4)
 
-Then, different configurations with two colors are shown, in which the agent has to visit the red and yellow cells in sequence:
 
-<!-- ![](./case_2_colors/eval.gif)
-![](./case_2_colors_wall_tl/eval.gif)
-![](./case_2_colors_hard_start/eval.gif)
--->
+Then, different configurations with multiple colors are shown:
+
+![](./models/map4_easy_act-observe/video.gif)
+
 # Setup the project
 
 ## Clone the repository
