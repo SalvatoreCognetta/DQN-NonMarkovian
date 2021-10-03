@@ -151,10 +151,6 @@ if __name__ == '__main__':
     # Default dqn memory.
     if not memory:
         memory = 32500 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
-<<<<<<< HEAD
-
-=======
->>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
 
     # Choose whether or not to visualize the environment
     VISUALIZE = True
