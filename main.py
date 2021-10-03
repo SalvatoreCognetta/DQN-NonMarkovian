@@ -38,14 +38,8 @@ if __name__ == '__main__':
     # Handle command line arguments
     parser = argparse.ArgumentParser()
 
-<<<<<<< HEAD
-    parser.add_argument('--batch_size', type = int, default = 500,help= 'Experience batch size.')
-    parser.add_argument('--memory', type = int, default = None,help= 'Memory buffer size. Used by agents that train with replay buffer.')
-    parser.add_argument('--multi_step',type = int, default = 1, help="Agent update optimization steps.")
-=======
     parser.add_argument('--batch_size', type = int, default = 500, help= 'Experience batch size.')
     parser.add_argument('--memory', type = int, default = None, help= 'Memory buffer size. Used by agents that train with replay buffer.')
->>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
     parser.add_argument('--update_frequency', type = int, default = None, help="Frequency of the policy updates. Default equals to batch_size.")
     parser.add_argument('--num_colors', type = int, default = 2, help="Number of distinct colors in the map.")
     parser.add_argument('--learning_rate', type = float, default = 0.001, help="Learning rate for the optimization algorithm")
