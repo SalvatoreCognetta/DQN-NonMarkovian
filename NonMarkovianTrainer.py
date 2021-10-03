@@ -128,7 +128,7 @@ class NonMarkovianTrainer(object):
                     elif self.act_pattern == 'act-experience-update':
                         episode_states.append(states)
                         episode_internals.append(internals)
-                        actions, internals = agent.act(states=states, internals=internals, independent=True)
+                        actions, internals = agent.act(states=states, internals=internals, independent=True, deterministic=False)
                         episode_actions.append(actions)
                     
                     states, reward, terminal, info = environment.step(action=actions)
