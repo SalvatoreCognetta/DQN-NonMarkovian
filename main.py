@@ -38,9 +38,14 @@ if __name__ == '__main__':
     # Handle command line arguments
     parser = argparse.ArgumentParser()
 
+<<<<<<< HEAD
     parser.add_argument('--batch_size', type = int, default = 500,help= 'Experience batch size.')
     parser.add_argument('--memory', type = int, default = None,help= 'Memory buffer size. Used by agents that train with replay buffer.')
     parser.add_argument('--multi_step',type = int, default = 1, help="Agent update optimization steps.")
+=======
+    parser.add_argument('--batch_size', type = int, default = 500, help= 'Experience batch size.')
+    parser.add_argument('--memory', type = int, default = None, help= 'Memory buffer size. Used by agents that train with replay buffer.')
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
     parser.add_argument('--update_frequency', type = int, default = None, help="Frequency of the policy updates. Default equals to batch_size.")
     parser.add_argument('--num_colors', type = int, default = 2, help="Number of distinct colors in the map.")
     parser.add_argument('--learning_rate', type = float, default = 0.001, help="Learning rate for the optimization algorithm")
@@ -59,7 +64,6 @@ if __name__ == '__main__':
     # Collect some information from the argument parser.
     batch_size 	= args.batch_size
     memory 		= args.memory
-    multi_step 	= args.multi_step
     num_colors 	= args.num_colors
     update_frequency = args.update_frequency
     learning_rate 	 = args.learning_rate
@@ -147,7 +151,10 @@ if __name__ == '__main__':
     # Default dqn memory.
     if not memory:
         memory = 32500 #Replay memory capacity, has to fit at least maximum batch_size + maximum network/estimator horizon + 1 timesteps  #'minimum'
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
 
     # Choose whether or not to visualize the environment
     VISUALIZE = True
@@ -194,7 +201,8 @@ if __name__ == '__main__':
     trainer = NonMarkovianTrainer(agent, environment, NUM_STATES_AUTOMATON, 
                                   AUTOMATON_STATE_ENCODING_SIZE,
                                   SINK_ID, num_colors=num_colors,
-                                  act_pattern=act_pattern, synthetic_exp=synthetic
+                                  act_pattern=act_pattern, synthetic_exp=synthetic,
+                                  save_path=save_path
                                 )
 
     # Train the agent

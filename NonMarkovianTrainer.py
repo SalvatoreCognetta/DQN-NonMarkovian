@@ -5,9 +5,10 @@ from gym_sapientino_case.env import SapientinoCase
 from copy import deepcopy
 import numpy as np
 from collections import namedtuple
-
+from gym.wrappers.monitoring import video_recorder
 from utils import merge_lists, one_hot_encode
-
+from os.path import join
+import os
 DEBUG = False
 
 class NonMarkovianTrainer(object):
@@ -19,7 +20,12 @@ class NonMarkovianTrainer(object):
                 sink_id: int, 
                 num_colors: int = 2,
                 act_pattern:str='act-observe',
+<<<<<<< HEAD
                 synthetic_exp:bool=False
+=======
+                synthetic_exp:bool=False,
+                save_path:str='',
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
                 ) -> None:
 
         """
@@ -45,7 +51,9 @@ class NonMarkovianTrainer(object):
         self.num_colors = num_colors
         self.act_pattern = act_pattern
         self.synthetic = synthetic_exp
+        self.save_path = save_path
 
+<<<<<<< HEAD
         # assert act_pattern in ['act-observe', 'act-experience-update']
         # assert not synthetic_exp or (synthetic_exp and act_pattern == 'act-experience-update')
 
@@ -81,6 +89,14 @@ class NonMarkovianTrainer(object):
     #             reward, terminal = self.get_reward_automaton(automaton_state, prev_automaton_state,  reward, terminal, episode)
     #             agent.observe(terminal=terminal, reward=reward)            
     #             # experience.append([prev_states,prev_automaton_state,actions,reward,states,automaton_state])
+=======
+        assert act_pattern in ['act-observe', 'act-experience-update']
+        assert not synthetic_exp or (synthetic_exp and act_pattern == 'act-experience-update')
+
+        if DEBUG:
+            print("\n################### Agent architecture ###################\n")
+            print(self.agent.get_architecture())
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
 
     def pack_states(self,states) -> Dict[np.ndarray, np.ndarray]:
         """
@@ -188,9 +204,7 @@ class NonMarkovianTrainer(object):
   
                     if terminal:
                         states = environment.reset()
-                    # else:
-                    #     self.make_experience(automaton_state, agent, prev_states, environment, episode)
-                
+
                 print('Episode {}: {}'.format(episode, ep_reward))                
 
                 # if self.synthetic:
@@ -223,10 +237,16 @@ class NonMarkovianTrainer(object):
                 #         actions = transition.a
                 #         synthetic_internals = transition.i
                         
+<<<<<<< HEAD
                 #         automaton_state = states[1][0]
                 #         states = self.pack_states(states)
                 #         # act-experience-update
                         
+=======
+                        automaton_state = states[1][0]
+                        states = self.pack_states(states)
+                        # act-experience-update
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
 
                 #         if len(transitions):
                 #             for prevAutState in range(0,self.num_state_automaton-2):
@@ -253,15 +273,21 @@ class NonMarkovianTrainer(object):
                 #             synthetic_episode_terminal.append(terminal)
                 #             synthetic_episode_reward.append(reward)
                         
-                        # if reward != -0.1:
-                        #     print("Synthetic automaton state: {} \t Terminal: {} \t Reward: {} \t Info: {}".format(automaton_state, terminal, reward, info))
 
+<<<<<<< HEAD
                 #         prevAutState = int(automaton_state)
                 #         ep_reward += reward
                 #         cum_reward += reward
                         
                 #         # if self.act_pattern == 'act-observe':
                 #         #     agent.observe(terminal=terminal, reward=reward)
+=======
+                        prevAutState = int(automaton_state)
+                        ep_reward += reward
+
+                        if terminal:
+                            states = synthetic_environment.reset()
+>>>>>>> 9ebad3f7749c2bb0296b284588d5ef92900ed2a4
 
                     print('Synthetic Episode {}: {}'.format(episode, ep_reward))
 
@@ -287,35 +313,54 @@ class NonMarkovianTrainer(object):
                     # Perform update
                     agent.update()
             
-            # # EVALUATE for 100 episodes and VISUALIZE
-            # sum_rewards = 0.0
-            # for _ in range(100):
-            #     states = environment.reset()
-            #     prevAutState = 0
-            #     states = self.pack_states(states)
-            #     environment.visualize = True
-            #     internals = agent.initial_internals()
-            #     terminal = False
-            #     while not terminal:
-            #         actions, internals = agent.act(
-            #             states=states, internals=internals, independent=True, deterministic=True
-            #         )
-            #         states, terminal, reward = environment.execute(actions=actions)
-            #         automaton_state = states['gymtpl1'][0]
-            #         states = self.pack_states(states)
-            #         # Reward shaping.
-            #         # reward, terminal = self.get_reward_automaton(automaton_state, prevAutState, reward, terminal, episode)
-            #         prevAutState = automaton_state
-            #         sum_rewards += reward
-            # environment.visualize = False
-            # print('Mean evaluation return:', sum_rewards / 100.0)
+            # EVALUATE for 100 episodes and VISUALIZE
+            sum_rewards = 0.0
+            max_reward  = 0.0
+            vid = video_recorder.VideoRecorder(environment,path=join(self.save_path,"video.mp4"))
+            temp_mp4 = join(self.save_path,"video_temp.mp4")
+            temp_meta_json = join(self.save_path,"video_temp.meta.json")
+            for _ in tqdm(range(100), desc='evaluate'):
+                states = environment.reset()
+                prevAutState = 0
+                states = self.pack_states(states)
 
-                
+                internals = agent.initial_internals()
+                terminal = False
+                while not terminal:
+                    environment.render()
+                    vid.capture_frame()
+                    actions, internals = agent.act(
+                        states=states, internals=internals, independent=True, deterministic=True
+                    )
+                    states, reward, terminal, info = environment.step(action=actions)
+                    automaton_state = states[1][0]
+                    states = self.pack_states(states)
+                    # Reward shaping.
+                    reward, terminal = self.get_reward(automaton_state, prevAutState, reward, terminal, episode)
+                    prevAutState = automaton_state
+                    sum_rewards += reward
 
+                if sum_rewards > max_reward:
+                    # Change the filename from video_temp.mp4 to video.mp4
+                    vid.path = join(self.save_path,"video.mp4")
+                    # Save to local disk only if best reward
+                    vid.close()
+                    # Create a new temp vid to catch next episode that could have higher reward
+                    vid = video_recorder.VideoRecorder(environment,path=temp_mp4)
+                else:
+                    # If the episode doesn't have higher score, generate a new temp VideoRecorder that overwrite the older file
+                    del vid
+                    vid = video_recorder.VideoRecorder(environment,path=temp_mp4)
 
+            print('Mean evaluation return:', sum_rewards / 100.0)
+
+            # Remove the temp files
+            os.remove(temp_mp4)
+            os.remove(temp_meta_json)
             # Close both the agent and the environment.
             agent.close()
             environment.close()
+            
 
             return dict(cumulative_reward_nodiscount = cum_reward,
                         average_reward_nodiscount = cum_reward/episodes)
@@ -352,8 +397,6 @@ class NonMarkovianTrainer(object):
                 terminal = True
 
         elif self.num_colors == 4:
-            # Terminate the episode with a negative reward if the goal DFA reaches SINK state (failure).
-            
             if automaton_state == 1 and prev_automaton_state == 0:
                 reward = 500.0
 

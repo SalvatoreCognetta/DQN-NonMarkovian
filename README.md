@@ -35,8 +35,17 @@ In Gym SapientinoCase we have a planar unicycle robot that can move inside  a 2-
 
 ![Sapientino Environment](report/images/sapientino.png)
 
-<!-- TODO: finish with some examples -->
+## Experiments
+In the gif below are shown some examples of the environment. First we have a one color setting: 
 
+![](./models/map1_easy_act-observe/video.mp4)
+
+Then, different configurations with two colors are shown, in which the agent has to visit the red and yellow cells in sequence:
+
+<!-- ![](./case_2_colors/eval.gif)
+![](./case_2_colors_wall_tl/eval.gif)
+![](./case_2_colors_hard_start/eval.gif)
+-->
 # Setup the project
 
 ## Clone the repository
@@ -146,3 +155,5 @@ After a modification on the temprl forked project:
 - Sutton, Richard S. and Barto, Andrew G. 2018.Reinforcement Learning: An Introduction(second ed.). <https://mitpress.mit.edu/books/reinforcement-learning-second-edition>.
 - Schulman, J. and Wolski, F. and Dhariwal, P. and Radford, A. and Klimov, O. 2017. Proximal policy optimization algorithms <https://arxiv.org/abs/1707.06347>
 - Icarte, R. T. and Klassen, T. Q. and Valenzano, R. and McIlraith, S. A. 2020.   Reward machines: Exploiting reward function structure in reinforcement learning. <https://arxiv.org/abs/2010.03950>
+- Agrisani, A. and Fanti, A. and Lobefaro,L. https://github.com/lucalobefaro/reasoning_agent_project
+- Cardia, F. and Coppa, F. and Del Vecchio, A. https://github.com/francycar/RA_project/
