@@ -146,6 +146,7 @@ After a modification on the temprl forked project:
 
 ---
 ## References
+- Giuseppe De Giacomo, L. Iocchi, Marco Favorito, and F. Patrizi. 2019. Foundations for Restraining Bolts: ReinforcementLearning with LTLf/LDLf Restraining Specifications. InICAPS.
 - Sutton, Richard S. and Barto, Andrew G. 2018.Reinforcement Learning: An Introduction(second ed.). <https://mitpress.mit.edu/books/reinforcement-learning-second-edition>.
 - Schulman, J. and Wolski, F. and Dhariwal, P. and Radford, A. and Klimov, O. 2017. Proximal policy optimization algorithms <https://arxiv.org/abs/1707.06347>
 - Icarte, R. T. and Klassen, T. Q. and Valenzano, R. and McIlraith, S. A. 2020.   Reward machines: Exploiting reward function structure in reinforcement learning. <https://arxiv.org/abs/2010.03950>
