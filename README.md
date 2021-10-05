@@ -141,7 +141,7 @@ After a modification on the temprl forked project:
 	echo $RAENV_PATH # check if the path is correct
 	rm -rvf $RAENV_PATH/lib/python3.8/site-packages/temprl*
 	``` 
-	(bug of poetry: [virtual env doesn't updates]([https://link](https://github.com/python-poetry/poetry/issues/2921) ))
+	(bug of poetry: [virtual env doesn't updates](https://github.com/python-poetry/poetry/issues/2921) )
 3. reinstall gym-sapientino via: 
    ```bash
    cd gym-sapientino-case-master && pip install .
