@@ -17,76 +17,112 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \bibstyle{abbrvnat}
-\citation{dfa}
-\citation{schulman2017proximal_PPO}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Deterministic Finite Automata}{1}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Proximal Policy Optimization}{1}{section.3}\protected@file@percent }
-\newlabel{eq:policyGradientObj}{{1}{2}{Proximal Policy Optimization}{equation.3.1}{}}
-\newlabel{eq:advantageDefinition}{{2}{2}{Proximal Policy Optimization}{equation.3.2}{}}
-\citation{schulman2017proximal_PPO}
-\citation{schulman2017proximal_PPO}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Figure representing the effect of the clipping operation on the surrogate objective function. The figure is taken from the paper \cite  {schulman2017proximal_PPO}.}}{3}{figure.1}\protected@file@percent }
-\newlabel{fig:ClippingObjective}{{1}{3}{Figure representing the effect of the clipping operation on the surrogate objective function. The figure is taken from the paper \cite {schulman2017proximal_PPO}}{figure.1}{}}
-\newlabel{eq:clippedSurrogateObjective}{{3}{3}{Proximal Policy Optimization}{equation.3.3}{}}
-\newlabel{eq:ratioR}{{4}{3}{Proximal Policy Optimization}{equation.3.4}{}}
-\citation{schulman2017proximal_PPO}
-\citation{schulman2017proximal_PPO}
-\newlabel{eq:completeObjective}{{5}{4}{Proximal Policy Optimization}{equation.3.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4} Markov Decision Process}{4}{section.4}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces MDP example}}{5}{figure.2}\protected@file@percent }
-\newlabel{fig:mdp}{{2}{5}{MDP example}{figure.2}{}}
-\newlabel{one}{{7}{5}{Markov Decision Process}{equation.4.7}{}}
-\newlabel{two}{{8}{5}{Markov Decision Process}{equation.4.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Non Markovian Rewards Decision Processes}{5}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Temporal rewards specifications}{5}{section*.1}\protected@file@percent }
-\citation{Gym-Sapientino}
-\@writefile{toc}{\contentsline {paragraph}{Rewarding with automata}{6}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Gym-Sapientino}{6}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Temporal Goal on Gym-Sapientino}{6}{subsection.6.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Representation of the problem at hand in term of automata}}{7}{figure.3}\protected@file@percent }
-\newlabel{fig:stati}{{3}{7}{Representation of the problem at hand in term of automata}{figure.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}The non markovian agent}{7}{section.7}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Baseline implementation for the non markovian policy network. It takes as input both an observation \(o\), the state vector in our problem, and the state of the goal DFA \(q\). Then, according to the state of the automaton, the agents selects one of the \(|Q|\) \textit  {separate experts} (the markovian agents we have discussed so far) for the action selection. This image is taken from the slides of Roberto Cipollone for the Reasoning Agent course held in Sapienza in 2020/2021.}}{9}{figure.4}\protected@file@percent }
-\newlabel{fig:baselineSchema}{{4}{9}{Baseline implementation for the non markovian policy network. It takes as input both an observation \(o\), the state vector in our problem, and the state of the goal DFA \(q\). Then, according to the state of the automaton, the agents selects one of the \(|Q|\) \textit {separate experts} (the markovian agents we have discussed so far) for the action selection. This image is taken from the slides of Roberto Cipollone for the Reasoning Agent course held in Sapienza in 2020/2021}{figure.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Implementation Details}{10}{section.8}\protected@file@percent }
-\newlabel{sec:ImplementationDetails}{{8}{10}{Implementation Details}{section.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Proposed network implementation}{10}{subsection.8.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces This sketch represents the non markovian policy network scheme implemented as a two hidden layer fully connected neural neural network. The architecture in the figure may employed in solving the problem of visiting a sequence of three colors (\color  {blue} blue \color  {black}, \color  {red} red \color  {black} and \color  {green} green \color  {black}). In \color  {magenta} magenta\color  {black}, we represent the automaton state binary vector as described in the section [\ref  {sec:ImplementationDetails}]. The \color  {blue} blue \color  {black} neurons represent the policy network of the markovian agent that is trained to reach the \color  {blue} blue \color  {black} colored tile in the map; the same holds for the \color  {red} red \color  {black} and the \color  {green} green \color  {black} neurons.}}{11}{figure.5}\protected@file@percent }
-\newlabel{fig:nonMarkovianNetwork}{{5}{11}{This sketch represents the non markovian policy network scheme implemented as a two hidden layer fully connected neural neural network. The architecture in the figure may employed in solving the problem of visiting a sequence of three colors (\color {blue} blue \color {black}, \color {red} red \color {black} and \color {green} green \color {black}). In \color {magenta} magenta\color {black}, we represent the automaton state binary vector as described in the section [\ref {sec:ImplementationDetails}]. The \color {blue} blue \color {black} neurons represent the policy network of the markovian agent that is trained to reach the \color {blue} blue \color {black} colored tile in the map; the same holds for the \color {red} red \color {black} and the \color {green} green \color {black} neurons}{figure.5}{}}
-\citation{rf}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Network Description}{13}{subsection.8.2}\protected@file@percent }
-\newlabel{network}{{8.2}{13}{Network Description}{subsection.8.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Reward shaping}{14}{subsection.8.3}\protected@file@percent }
-\newlabel{sec:rewardShaping}{{8.3}{14}{Reward shaping}{subsection.8.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Reward shaping for two colors case; this mechanism can be extended also to three colors case.}}{14}{figure.6}\protected@file@percent }
-\newlabel{fig:reward shaping}{{6}{14}{Reward shaping for two colors case; this mechanism can be extended also to three colors case}{figure.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {9}Experimental environment}{14}{section.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {10}Trials}{14}{section.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {11}Experiment with two colors }{15}{section.11}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces 4x9 Gym Sapientino map for the experiment with two colors. The initial position is in the cell [2,4] in the center of the map.}}{15}{figure.7}\protected@file@percent }
-\newlabel{fig:mapTwoColors}{{7}{15}{4x9 Gym Sapientino map for the experiment with two colors. The initial position is in the cell [2,4] in the center of the map}{figure.7}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the two experiments with two colors}}{16}{table.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {12}Experiments with two colors with bigger maps}{16}{section.12}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces 7x10 Gym-Sapientino map. The initial position is in cell [4,6] more or less in the center of the map.}}{17}{figure.8}\protected@file@percent }
-\newlabel{fig:twoColorIntermediateSizeMap}{{8}{17}{7x10 Gym-Sapientino map. The initial position is in cell [4,6] more or less in the center of the map}{figure.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {12.1}First Trial}{17}{subsection.12.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with two colors in the first bigger map}}{17}{table.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {12.2}Second Trial}{17}{subsection.12.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces 9x17 Gym-Sapientino map. The initial position is in cell [4,8] in the center of the map. }}{17}{figure.9}\protected@file@percent }
-\newlabel{fig:bigmap}{{9}{17}{9x17 Gym-Sapientino map. The initial position is in cell [4,8] in the center of the map}{figure.9}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with two colors in the second bigger map}}{18}{table.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {13}Experiment with three colors}{18}{section.13}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces 4x9 Gym Sapientino map for the experiment with three colors. The initial position is in cell [4,4] at the bottom of the map.}}{19}{figure.10}\protected@file@percent }
-\newlabel{fig:mapThreeColors}{{10}{19}{4x9 Gym Sapientino map for the experiment with three colors. The initial position is in cell [4,4] at the bottom of the map}{figure.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Plots related to the first trial with three colors and with our custom network.}}{20}{figure.11}\protected@file@percent }
-\newlabel{fig:threeColorsPlotsCustom}{{11}{20}{Plots related to the first trial with three colors and with our custom network}{figure.11}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Plots related to the first trial with three colors and with auto network.}}{21}{figure.12}\protected@file@percent }
-\newlabel{fig:threeColorsPlotsAuto}{{12}{21}{Plots related to the first trial with three colors and with auto network}{figure.12}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents on the three color map. The proposed implementation features 193 neurons on the two hidden layers. This happens since in order to reach the temporal goal we need 3 experts. Using 64 neurons for each expert we have \(193 = 64*3\) hidden neurons.}}{21}{table.4}\protected@file@percent }
-\newlabel{tab:threeColorMapAgentTable}{{4}{21}{Table containing the relevant hyperparameter configuration of the tested agents on the three color map. The proposed implementation features 193 neurons on the two hidden layers. This happens since in order to reach the temporal goal we need 3 experts. Using 64 neurons for each expert we have \(193 = 64*3\) hidden neurons}{table.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {14}Conclusion and result discussion}{21}{section.14}\protected@file@percent }
-\bibdata{main}
-\bibstyle{plain}
-\bibcite{Gym-Sapientino}{{1}{}{{}}{{}}}
-\providecommand\NAT@force@numbers{}\NAT@force@numbers
+\citation{hopcroft2001automata}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{4}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Deterministic Finite Automata}{4}{section.2}\protected@file@percent }
+\newlabel{sec:dfa}{{2}{4}{Deterministic Finite Automata}{section.2}{}}
+\citation{sutton2018rl}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces A representation of a DFA.\relax }}{5}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:DFA}{{1}{5}{A representation of a DFA.\relax }{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Markov Decision Process}{5}{section.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Reinforcement Learning: agent-environment interaction.\relax }}{6}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:RL}{{2}{6}{Reinforcement Learning: agent-environment interaction.\relax }{figure.caption.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Markov trajectory.\relax }}{6}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:markov_assumption}{{3}{6}{Markov trajectory.\relax }{figure.caption.4}{}}
+\citation{watkins1992qlearn}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Q-learning}{7}{section.4}\protected@file@percent }
+\newlabel{sec:ql}{{4}{7}{Q-learning}{section.4}{}}
+\citation{Mnih2015HumanlevelCT}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Deep Q-Network}{8}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:dqn}{{4.1}{8}{Deep Q-Network}{subsection.4.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces The conceptual difference of Q-learning and Deep Q-learning. Form the Q-table we get the Q-value from a (state,action) pair. In a DQN the neural network produces a Q-value distribution over the actions, its maximum value correspond to the best action to take.\relax }}{9}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:qdqn}{{4}{9}{The conceptual difference of Q-learning and Deep Q-learning. Form the Q-table we get the Q-value from a (state,action) pair. In a DQN the neural network produces a Q-value distribution over the actions, its maximum value correspond to the best action to take.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Experience Replay}{9}{subsubsection.4.1.1}\protected@file@percent }
+\newlabel{sec:exrep}{{4.1.1}{9}{Experience Replay}{subsubsection.4.1.1}{}}
+\citation{Thiebaux06}
+\citation{camacho_chen_sanner_mcilraith_2017}
+\citation{brafman2018ltlf_LTLF_LDLF}
+\citation{camacho_chen_sanner_mcilraith_2017}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Non Markovian Rewards Decision Processes}{10}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}LTLf/LDLf}{10}{subsection.5.1}\protected@file@percent }
+\newlabel{eq:ltlf_ldlf}{{13}{10}{LTLf/LDLf}{equation.5.13}{}}
+\citation{icarte2020reward}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Counterfactual Experiences for Reward Machines (CRM)}{11}{section.6}\protected@file@percent }
+\newlabel{sec:CRM}{{6}{11}{Counterfactual Experiences for Reward Machines (CRM)}{section.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Adaptation example of CRM method to tabular q-learning (off-policy learning) with the addition of lines 9 and 10.\relax }}{11}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:crm_alg}{{5}{11}{Adaptation example of CRM method to tabular q-learning (off-policy learning) with the addition of lines 9 and 10.\relax }{figure.caption.6}{}}
+\citation{icarte2020reward}
+\citation{watkins1992qlearn}
+\newlabel{eq:crm}{{14}{12}{Counterfactual Experiences for Reward Machines (CRM)}{equation.6.14}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces An example environment (a) and one reward machine for it (b) i.e. get coffee, then reach office.\relax }}{12}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:examp_crm}{{6}{12}{An example environment (a) and one reward machine for it (b) i.e. get coffee, then reach office.\relax }{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Gym-Sapientino}{13}{section.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Gym-Sapientino environment.\relax }}{13}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:sapientino_grid}{{7}{13}{Gym-Sapientino environment.\relax }{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Temporal Goal on Gym-Sapientino}{13}{subsection.7.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Old DFA with sink state.\relax }}{14}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:sinkdfa}{{8}{14}{Old DFA with sink state.\relax }{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces New DFA without sink state.\relax }}{14}{figure.caption.9}\protected@file@percent }
+\newlabel{fig:nosinkdfa}{{9}{14}{New DFA without sink state.\relax }{figure.caption.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}The non markovian agent}{14}{section.8}\protected@file@percent }
+\newlabel{sec:non_mark_agent}{{8}{14}{The non markovian agent}{section.8}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Baseline implementation of a non markovian policy network. It takes as input the observation \(o\) and the state of the goal DFA \(q\). Then, according to the state of the automaton, the agents selects one of the \(|Q|\) \textit  {separate experts} for the action selection. This image is taken from the slides of PhD student Roberto Cipollone for the Reasoning Agent course held in Sapienza in 2020/2021.\relax }}{15}{figure.caption.10}\protected@file@percent }
+\newlabel{fig:baselineSchema}{{10}{15}{Baseline implementation of a non markovian policy network. It takes as input the observation \(o\) and the state of the goal DFA \(q\). Then, according to the state of the automaton, the agents selects one of the \(|Q|\) \textit {separate experts} for the action selection. This image is taken from the slides of PhD student Roberto Cipollone for the Reasoning Agent course held in Sapienza in 2020/2021.\relax }{figure.caption.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Implementation Details}{15}{section.9}\protected@file@percent }
+\newlabel{sec:ImplementationDetails}{{9}{15}{Implementation Details}{section.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Conceptual representation of the non markovian policy network used, a 2 hidden layer Multi Layer Perceptron (MLP). Notice that the hidden layers activates depending on the one hot encoded \color  {gray} automata state \color  {black} in input, this makes each set of perceptrons specialized in solving one automata state. The architecture in the figure may employed in solving the problem of visiting a sequence of three colors amid \color  {blue} blue \color  {black}, \color  {red} red \color  {black} and \color  {yellow} yellow\color  {black}. Color repetition is also applicable, the more the number of automata states the larger the hidden layers.\relax }}{16}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:nonMarkovianNetwork}{{11}{16}{Conceptual representation of the non markovian policy network used, a 2 hidden layer Multi Layer Perceptron (MLP). Notice that the hidden layers activates depending on the one hot encoded \color {gray} automata state \color {black} in input, this makes each set of perceptrons specialized in solving one automata state. The architecture in the figure may employed in solving the problem of visiting a sequence of three colors amid \color {blue} blue \color {black}, \color {red} red \color {black} and \color {yellow} yellow\color {black}. Color repetition is also applicable, the more the number of automata states the larger the hidden layers.\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Network}{17}{subsection.9.1}\protected@file@percent }
+\newlabel{network}{{9.1}{17}{Network}{subsection.9.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Reward Shaping}{18}{subsection.9.2}\protected@file@percent }
+\newlabel{sec:rewardShaping}{{9.2}{18}{Reward Shaping}{subsection.9.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Counterfactual Experiences for Reward Machines}{19}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Experiments}{20}{section.10}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the two experiments with two colors\relax }}{21}{table.caption.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}One Color Easy}{21}{subsection.10.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces 4x8 Gym Sapientino map for the experiment with one color. The initial position is in the cell [2,2].\relax }}{21}{figure.caption.13}\protected@file@percent }
+\newlabel{fig:m1e}{{12}{21}{4x8 Gym Sapientino map for the experiment with one color. The initial position is in the cell [2,2].\relax }{figure.caption.13}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with 1 color\relax }}{22}{table.caption.15}\protected@file@percent }
+\newlabel{tab:t1e}{{2}{22}{Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with 1 color\relax }{table.caption.15}{}}
+\newlabel{fig:p1el}{{13a}{22}{Subfigure 13a}{subfigure.13.1}{}}
+\newlabel{sub@fig:p1el}{{(a)}{a}{Subfigure 13a\relax }{subfigure.13.1}{}}
+\newlabel{fig:p1er}{{13b}{22}{Subfigure 13b}{subfigure.13.2}{}}
+\newlabel{sub@fig:p1er}{{(b)}{b}{Subfigure 13b\relax }{subfigure.13.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces The training plots for $DQN$ with parameters in Table \ref  {tab:t1e}, in Sapientino Map with one colour in Figure \ref  {fig:m1e}. The convergence rate increases as the epoch length decreases.\relax }}{22}{figure.caption.16}\protected@file@percent }
+\newlabel{fig:p1e}{{13}{22}{The training plots for $DQN$ with parameters in Table \ref {tab:t1e}, in Sapientino Map with one colour in Figure \ref {fig:m1e}. The convergence rate increases as the epoch length decreases.\relax }{figure.caption.16}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {epoch-length}}}{22}{subfigure.13.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {epoch-reward}}}{22}{subfigure.13.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2}Two Colors Easy and Hard}{22}{subsection.10.2}\protected@file@percent }
+\newlabel{fig:m2e}{{14a}{23}{Subfigure 14a}{subfigure.14.1}{}}
+\newlabel{sub@fig:m2e}{{(a)}{a}{Subfigure 14a\relax }{subfigure.14.1}{}}
+\newlabel{fig:m2h}{{14b}{23}{Subfigure 14b}{subfigure.14.2}{}}
+\newlabel{sub@fig:m2h}{{(b)}{b}{Subfigure 14b\relax }{subfigure.14.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces 4x9 Gym Sapientino maps for the experiment with two color. The initial position is in the cell [2,2]. (b) shows the \textit  {hard} case used in which there is an obstacle between the two temporal goals.\relax }}{23}{figure.caption.17}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Easy map with two colors}}}{23}{subfigure.14.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Hard map with two colors}}}{23}{subfigure.14.2}\protected@file@percent }
+\newlabel{fig:p2el}{{15a}{23}{Subfigure 15a}{subfigure.15.1}{}}
+\newlabel{sub@fig:p2el}{{(a)}{a}{Subfigure 15a\relax }{subfigure.15.1}{}}
+\newlabel{fig:p2er}{{15b}{23}{Subfigure 15b}{subfigure.15.2}{}}
+\newlabel{sub@fig:p2er}{{(b)}{b}{Subfigure 15b\relax }{subfigure.15.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces The training plots for DQN with parameters in Table \ref  {tab:t2}, in an easy Sapientino Map with two colours in Figure \ref  {fig:m2e}. The convergence rate increases as the epoch length decreases. \relax }}{23}{figure.caption.18}\protected@file@percent }
+\newlabel{fig:p2e}{{15}{23}{The training plots for DQN with parameters in Table \ref {tab:t2}, in an easy Sapientino Map with two colours in Figure \ref {fig:m2e}. The convergence rate increases as the epoch length decreases. \relax }{figure.caption.18}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {epoch-length}}}{23}{subfigure.15.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {epoch-reward}}}{23}{subfigure.15.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3}Three Colors Easy and Hard}{23}{subsection.10.3}\protected@file@percent }
+\newlabel{fig:p2hl}{{16a}{24}{Subfigure 16a}{subfigure.16.1}{}}
+\newlabel{sub@fig:p2hl}{{(a)}{a}{Subfigure 16a\relax }{subfigure.16.1}{}}
+\newlabel{fig:p2hr}{{16b}{24}{Subfigure 16b}{subfigure.16.2}{}}
+\newlabel{sub@fig:p2hr}{{(b)}{b}{Subfigure 16b\relax }{subfigure.16.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces The training plots for DQN with parameters in Table \ref  {tab:t2}, in an \textit  {hard} Sapientino Map with two colours in Figure \ref  {fig:m2h}. Unexpectedly, using the parameters in Table \ref  {tab:t2}, the training converges faster than the \textit  {easy} case. \relax }}{24}{figure.caption.19}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {epoch-length}}}{24}{subfigure.16.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {epoch-reward}}}{24}{subfigure.16.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with 2 color\relax }}{24}{table.caption.21}\protected@file@percent }
+\newlabel{tab:t2}{{3}{24}{Table containing the relevant hyperparameter configuration of the tested agents related to the experiment with 2 color\relax }{table.caption.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.4}Four Colors Easy}{24}{subsection.10.4}\protected@file@percent }
+\newlabel{fig:m3e}{{17a}{25}{Subfigure 17a}{subfigure.17.1}{}}
+\newlabel{sub@fig:m3e}{{(a)}{a}{Subfigure 17a\relax }{subfigure.17.1}{}}
+\newlabel{fig:m3h}{{17b}{25}{Subfigure 17b}{subfigure.17.2}{}}
+\newlabel{sub@fig:m3h}{{(b)}{b}{Subfigure 17b\relax }{subfigure.17.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces (a) 4x9 Gym Sapientino map for the easy experiment with three color. (b) 6x11 Gym Sapientino map shows the \textit  {harder} map used in which there is an obstacle between the two temporal goals. The initial position is in the cell [2,2] for both experiments.\relax }}{25}{figure.caption.22}\protected@file@percent }
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Easy map with three colors}}}{25}{sub

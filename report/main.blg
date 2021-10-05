@@ -1,0 +1,53 @@
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: abbrvnat.bst
+Illegal, another \bibstyle command---line 162 of file main.aux
+ : \bibstyle
+ :          {plain}
+I'm skipping whatever remains of this command
+Database file #1: main.bib
+Warning--can't use both volume and number fields in brafman2018ltlf_LTLF_LDLF
+Warning--empty journal in camacho_chen_sanner_mcilraith_2017
+You've used 8 entries,
+            2773 wiz_defined-function locations,
+            646 strings with 6359 characters,
+and the built_in function-call counts, 4551 in all, are:
+= -- 359
+> -- 402
+< -- 3
++ -- 134
+- -- 126
+* -- 419
+:= -- 741
+add.period$ -- 28
+call.type$ -- 8
+change.case$ -- 64
+chr.to.int$ -- 8
+cite$ -- 18
+duplicate$ -- 163
+empty$ -- 288
+format.name$ -- 138
+if$ -- 915
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 9
+newline$ -- 52
+num.names$ -- 32
+pop$ -- 133
+preamble$ -- 1
+purify$ -- 58
+quote$ -- 0
+skip$ -- 141
+stack$ -- 0
+substring$ -- 73
+swap$ -- 12
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 78
+warning$ -- 2
+while$ -- 27
+width$ -- 0
+write$ -- 116
+(There was 1 error message)

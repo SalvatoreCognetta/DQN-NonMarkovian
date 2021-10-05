@@ -1,0 +1,68 @@
+\begin{thebibliography}{8}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Brafman et~al.(2018)Brafman, De~Giacomo, and
+  Patrizi]{brafman2018ltlf_LTLF_LDLF}
+R.~Brafman, G.~De~Giacomo, and F.~Patrizi.
+\newblock Ltlf/ldlf non-markovian rewards.
+\newblock In \emph{Proceedings of the AAAI Conference on Artificial
+  Intelligence}, volume~32, 2018.
+
+\bibitem[Camacho et~al.(2017)Camacho, Chen, Sanner, and
+  McIlraith]{camacho_chen_sanner_mcilraith_2017}
+A.~Camacho, O.~Chen, S.~Sanner, and S.~A. McIlraith.
+\newblock Decision-making with non-markovian rewards: From ltl to
+  automata-based reward shaping.
+\newblock 2017.
+\newblock URL
+  \url{http://www.cs.toronto.edu/~sheila/publications/cam-etal-rldm17.pdf}.
+
+\bibitem[Hopcroft et~al.(2006)Hopcroft, Motwani, and
+  Ullman]{hopcroft2001automata}
+J.~E. Hopcroft, R.~Motwani, and J.~D. Ullman.
+\newblock \emph{Introduction to Automata Theory, Languages, and Computation
+  (3rd Edition)}.
+\newblock Addison-Wesley Longman Publishing Co., Inc., USA, 2006.
+\newblock ISBN 0321455363.
+
+\bibitem[Icarte et~al.(2020)Icarte, Klassen, Valenzano, and
+  McIlraith]{icarte2020reward}
+R.~T. Icarte, T.~Q. Klassen, R.~Valenzano, and S.~A. McIlraith.
+\newblock Reward machines: Exploiting reward function structure in
+  reinforcement learning, 2020.
+
+\bibitem[Mnih et~al.(2015)Mnih, Kavukcuoglu, Silver, Rusu, Veness, Bellemare,
+  Graves, Riedmiller, Fidjeland, Ostrovski, Petersen, Beattie, Sadik,
+  Antonoglou, King, Kumaran, Wierstra, Legg, and
+  Hassabis]{Mnih2015HumanlevelCT}
+V.~Mnih, K.~Kavukcuoglu, D.~Silver, A.~A. Rusu, J.~Veness, M.~G. Bellemare,
+  A.~Graves, M.~A. Riedmiller, A.~Fidjeland, G.~Ostrovski, S.~Petersen,
+  C.~Beattie, A.~Sadik, I.~Antonoglou, H.~King, D.~Kumaran, D.~Wierstra,
+  S.~Legg, and D.~Hassabis.
+\newblock Human-level control through deep reinforcement learning.
+\newblock \emph{Nature}, 518:\penalty0 529--533, 2015.
+
+\bibitem[Sutton and Barto(2018)]{sutton2018rl}
+R.~S. Sutton and A.~G. Barto.
+\newblock \emph{Reinforcement Learning: An Introduction}.
+\newblock A Bradford Book, Cambridge, MA, USA, 2018.
+\newblock ISBN 0262039249.
+
+\bibitem[Thiebaux et~al.(2006)Thiebaux, Gretton, Slaney, Price, and
+  Kabanza]{Thiebaux06}
+S.~Thiebaux, C.~Gretton, J.~Slaney, D.~Price, and F.~Kabanza.
+\newblock Decision-theoretic planning with non-markovian rewards.
+\newblock \emph{J. Artif. Intell. Res. (JAIR)}, 25:\penalty0 17--74, 01 2006.
+\newblock \doi{10.1613/jair.1676}.
+
+\bibitem[Watkins and Dayan(1992)]{watkins1992qlearn}
+C.~Watkins and P.~Dayan.
+\newblock Technical note: Q-learning.
+\newblock \emph{Machine Learning}, 8:\penalty0 279--292, 05 1992.
+\newblock \doi{10.1007/BF00992698}.
+
+\end{thebibliography}
