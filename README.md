@@ -102,7 +102,10 @@ you may use another path which is still in the `PATH` variable.
 
 ## Run the project
 In order to train the net:  
-`python main.py --exploration=0.3 --num_colors=3`
+```bash
+conda activate raenv
+python main.py --episodes=500 --max_timesteps=500  --exploration=0.5 --path='maps/map2_easy.txt' --num_colors=2
+```
 
 ---
 ## Known Erros: Numpy
