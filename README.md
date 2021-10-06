@@ -1,5 +1,9 @@
 # Reasoning Agent Project
 
+## Contents
+- [Report](Reasoning_Agents_Project.pdf)
+- [Video Presentation - to be added]()
+
 ## Authors
 - Appetito Daniele (<appetito.1916560@studenti.uniroma1.it>)
 - Cognetta Salvatore (<cognetta.1874383@studenti.uniroma1.it>)
