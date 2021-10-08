@@ -2,7 +2,8 @@
 
 ## Contents
 - [Report](Reasoning_Agents_Project.pdf)
-- [Video Presentation 1](https://drive.google.com/file/d/1lnrWiH2PrYbay28SdlgLsfw1XWmWxg3i/view?usp=sharing)
+- [Video Presentation 1](https://drive.google.com/file/d/1mmP4GjPN8fwOJxHO9d1sgr3UHdaWOoaX/view?usp=sharing)
+- [Video Presentation 2](https://drive.google.com/file/d/1lnrWiH2PrYbay28SdlgLsfw1XWmWxg3i/view?usp=sharing)
 - [temprl repository](https://github.com/SalvatoreCognetta/temprl/tree/develop)
 
 ## Authors
